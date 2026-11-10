@@ -1,0 +1,44 @@
+/* Base CSS Reset and Variables for Regulax AI */
+:root {
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --color-bg-left: #f9fafb;
+    --color-bg-right: #ffffff;
+    --color-text-primary: #111827;
+    --color-text-secondary: #4b5563;
+    --color-text-muted: #6b7280;
+    --color-border: #e5e7eb;
+    --color-input-border: #d1d5db;
+    --color-input-focus: #111827;
+    --color-btn-primary: #18181b;
+    --color-btn-hover: #09090b;
+    --color-error: #ef4444;
+    --color-error-bg: #fef2f2;
+    --color-card-bg: #f9fafb;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-right);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button, input {
+    font-family: inherit;
+}
+
