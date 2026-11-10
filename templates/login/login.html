@@ -1,0 +1,236 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Sign in - Regulax AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/login/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <!-- Left Hero Column -->
+    <section class="login-left">
+        <div class="brand-header">
+            <div class="brand-logo">
+                <span class="logo-mark">R</span>
+            </div>
+            <span class="brand-name">Regulax AI</span>
+        </div>
+
+        <div class="hero-content">
+            <h1 class="hero-headline">
+                Quality records,<br>
+                signed with<br>
+                confidence.
+            </h1>
+            <p class="hero-subtext">
+                Every entry is attributable, legible and contemporaneous.<br>
+                Sign in to review, approve and verify.
+            </p>
+
+            <ul class="feature-list">
+                <li class="feature-item">
+                    <span class="feature-icon-wrapper">
+                        <!-- Electronic signature / document icon -->
+                        <svg class="feature-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="2" width="16" height="20" rx="2.5" ry="2.5"></rect>
+                            <line x1="8" y1="7" x2="16" y2="7"></line>
+                            <line x1="8" y1="11" x2="16" y2="11"></line>
+                            <path d="M8 15h4"></path>
+                        </svg>
+                    </span>
+                    <span class="feature-text">Electronic signatures on every approval</span>
+                </li>
+                <li class="feature-item">
+                    <span class="feature-icon-wrapper">
+                        <!-- Clock / timestamp icon -->
+                        <svg class="feature-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </span>
+                    <span class="feature-text">A complete, time-stamped audit trail</span>
+                </li>
+                <li class="feature-item">
+                    <span class="feature-icon-wrapper">
+                        <!-- Role-based access / Users icon -->
+                        <svg class="feature-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </span>
+                    <span class="feature-text">Role-based access, individual accounts</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="left-spacer"></div>
+    </section>
+
+    <!-- Right Sign In Column -->
+    <section class="login-right">
+        <header class="right-header">
+            <div class="request-access-note">
+                New here? <a href="{% url 'register' %}" class="request-access-link">Request access</a>
+            </div>
+        </header>
+
+        <div class="auth-card-wrapper">
+            <div class="auth-card">
+                <h2 class="auth-title">Sign in</h2>
+                <p class="auth-subtitle">Use your individual account. Accounts are never shared.</p>
+
+                {% if form.non_field_errors %}
+                <div class="alert-error" role="alert">
+                    {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <form method="post" action="{% url 'login' %}" novalidate class="login-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ next }}">
+
+                    <!-- Username Field -->
+                    <div class="form-group">
+                        <label for="id_username" class="form-label">Username</label>
+                        <div class="input-container {% if form.username.errors %}has-error{% endif %}">
+                            <span class="input-icon-left" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                            </span>
+                            <input 
+                                type="text" 
+                                name="username" 
+                                id="id_username" 
+                                class="form-input" 
+                                placeholder="firstname.lastname" 
+                                value="{{ form.username.value|default:'' }}" 
+                                required 
+                                autocomplete="username"
+                                spellcheck="false"
+                                autocapitalize="none">
+                        </div>
+                        {% if form.username.errors %}
+                        <div class="field-error-text">{{ form.username.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="form-group">
+                        <label for="id_password" class="form-label">Password</label>
+                        <div class="input-container {% if form.password.errors %}has-error{% endif %}">
+                            <span class="input-icon-left" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                            </span>
+                            <input 
+                                type="password" 
+                                name="password" 
+                                id="id_password" 
+                                class="form-input password-input" 
+                                placeholder="Enter your password" 
+                                required 
+                                autocomplete="current-password">
+                            <button 
+                                type="button" 
+                                class="password-toggle-btn" 
+                                id="togglePasswordBtn" 
+                                aria-label="Toggle password visibility" 
+                                tabindex="-1">
+                                <!-- Eye icon for show -->
+                                <svg id="eyeIconShow" class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                <!-- Eye-off icon for hide -->
+                                <svg id="eyeIconHide" class="eye-icon is-hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+                                    <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
+                                    <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
+                                    <line x1="2" y1="2" x2="22" y2="22"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        {% if form.password.errors %}
+                        <div class="field-error-text">{{ form.password.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Remember username & Forgot password -->
+                    <div class="form-options-row">
+                        <label class="remember-checkbox-label">
+                            <input 
+                                type="checkbox" 
+                                name="remember_username" 
+                                id="id_remember_username" 
+                                class="custom-checkbox"
+                                {% if form.remember_username.value %}checked{% endif %}>
+                            <span class="checkbox-custom-box" aria-hidden="true">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </span>
+                            <span class="remember-text">Remember username</span>
+                        </label>
+                        <a href="javascript:void(0)" class="forgot-password-link" id="forgotPasswordLink">Forgot password?</a>
+                    </div>
+
+                    <!-- Sign In Button -->
+                    <button type="submit" class="btn-signin" id="signInSubmitBtn">
+                        Sign in
+                    </button>
+                </form>
+
+                <!-- Two-step verification Callout Box -->
+                <div class="verification-callout">
+                    <span class="callout-icon" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="9 12 11 14 15 10"></polyline>
+                        </svg>
+                    </span>
+                    <div class="callout-content">
+                        Two-step verification is required. You will be asked for a code after you sign in. Sign-ins and signatures are recorded in the audit trail and are binding.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="right-footer">
+            <a href="javascript:void(0)" class="footer-link" id="helpLink">Help</a>
+            <a href="javascript:void(0)" class="footer-link" id="privacyLink">Privacy</a>
+        </footer>
+    </section>
+</div>
+
+<!-- Modal Dialog for Forgot Password / Help / Privacy -->
+<div class="modal-backdrop" id="infoModalBackdrop" style="display: none;">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-header">
+            <h3 class="modal-title" id="modalTitle">Information</h3>
+            <button type="button" class="modal-close-btn" id="modalCloseBtn" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <p id="modalMessage">Content goes here.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-modal-action" id="modalActionBtn">Understood</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/login/login.js' %}"></script>
+{% endblock %}
+
