@@ -1,0 +1,6 @@
+Django
+python-dotenv
+psycopg[binary]
+dj-database-url
+Pillow
+
