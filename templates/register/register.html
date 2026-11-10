@@ -1,0 +1,18 @@
+{% extends "base/base.html" %}
+
+{% block title %}Request Access - Regulax AI{% endblock %}
+
+{% block content %}
+<div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #f9fafb; font-family: inherit; padding: 24px;">
+    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 36px; max-width: 480px; width: 100%; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 24px;">
+            <div style="width: 28px; height: 28px; background: #18181b; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px;">R</div>
+            <span style="font-weight: 600; font-size: 16px; color: #111827;">Regulax AI</span>
+        </div>
+        <h2 style="font-size: 24px; font-weight: 700; color: #111827; margin-bottom: 8px;">Request Access</h2>
+        <p style="color: #6b7280; font-size: 14px; margin-bottom: 24px;">Please contact your compliance or laboratory administrator to provision your individual Regulax AI account.</p>
+        <a href="{% url 'login' %}" style="display: inline-block; padding: 10px 20px; background: #18181b; color: white; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 500;">Back to Sign in</a>
+    </div>
+</div>
+{% endblock %}
+
