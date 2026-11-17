@@ -22,17 +22,20 @@ class RegisterViewTests(TestCase):
         self.assertIn('Regulax AI', content)
         self.assertIn('Create', content)
         self.assertIn('Account', content)
-        self.assertIn('Accounts are individual and never shared.', content)
+        self.assertIn('Accounts are', content)
+        self.assertIn('never', content)
+        self.assertIn('shared', content)
 
         # Form fields & labels
-        self.assertIn('FULL NAME', content)
-        self.assertIn('WORK EMAIL', content)
-        self.assertIn('COMPANY NAME', content)
-        self.assertIn('PASSWORD', content)
-        self.assertIn('CONFIRM PASSWORD', content)
+        self.assertIn('Full name', content)
+        self.assertIn('Work email', content)
+        self.assertIn('Company name', content)
+        self.assertIn('Password', content)
+        self.assertIn('Confirm password', content)
 
         # Compliance statement
-        self.assertIn('I understand that my actions are recorded and attributable to me, and that my electronic signature is binding.', content)
+        self.assertIn('I understand that my actions are recorded and attributable to me', content)
+        self.assertIn('electronic signature is binding', content)
 
         # Button & Link
         self.assertIn('Submit request', content)

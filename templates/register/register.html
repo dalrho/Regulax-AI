@@ -8,153 +8,215 @@
 {% endblock %}
 
 {% block content %}
-<div class="register-page-container">
-    <!-- Left Column -->
-    <section class="register-left">
-        <header class="brand-header">
-            <span class="brand-name">Regulax AI</span>
-        </header>
+<div class="register-container">
 
-        <div class="hero-center">
-            <h1 class="hero-title">
-                Create<br>Account
-            </h1>
-            <div class="hero-divider" aria-hidden="true"></div>
+    <!-- ═══════════════════════════════════════════════════
+         LEFT HERO COLUMN
+    ═══════════════════════════════════════════════════ -->
+    <section class="register-left">
+
+        <!-- Brand -->
+        <div class="reg-brand-header">
+            <a href="{% url 'login' %}" class="reg-brand-link" aria-label="Go to Sign in">
+                <div class="reg-brand-logo">
+                    <span class="reg-logo-mark">R</span>
+                </div>
+                <span class="reg-brand-name">Regulax AI</span>
+            </a>
         </div>
 
-        <footer class="left-footer">
-            <p class="footer-note">Accounts are individual and never shared.</p>
+        <!-- Hero text -->
+        <div class="reg-hero-content">
+            <h1 class="reg-hero-title">
+                Create<br>Account
+            </h1>
+            <div class="reg-hero-divider" aria-hidden="true"></div>
+            <p class="reg-hero-sub">
+                Register your individual account.<br>
+                Accounts are <strong>never</strong> shared.
+            </p>
+        </div>
+
+        <!-- Bottom spacer slot -->
+        <div class="reg-left-spacer"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         RIGHT FORM COLUMN
+    ═══════════════════════════════════════════════════ -->
+    <section class="register-right">
+
+        <!-- Top-right: sign-in hint -->
+        <header class="reg-right-header">
+            <span class="reg-have-account">Already approved?
+                <a href="{% url 'login' %}" class="reg-signin-link">Sign in</a>
+            </span>
+        </header>
+
+        <!-- Form card -->
+        <div class="reg-card-wrapper">
+            <div class="reg-card">
+
+                <h2 class="reg-card-title">Create your account</h2>
+                <p class="reg-card-subtitle">Use a work email. Accounts are individual and never shared.</p>
+
+                {% if form.non_field_errors %}
+                <div class="reg-alert-error" role="alert">
+                    {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <form method="post" action="{% url 'register' %}" novalidate id="registerForm" class="reg-form">
+                    {% csrf_token %}
+
+                    <!-- Full Name -->
+                    <div class="reg-form-group">
+                        <label for="id_full_name" class="reg-label">Full name</label>
+                        <div class="reg-input-wrap {% if form.full_name.errors %}has-error{% endif %}">
+                            <span class="reg-input-icon" aria-hidden="true">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                                </svg>
+                            </span>
+                            <input type="text" name="full_name" id="id_full_name"
+                                   class="reg-input"
+                                   value="{{ form.full_name.value|default:'' }}"
+                                   placeholder="Jane Doe"
+                                   required autocomplete="name" spellcheck="false">
+                        </div>
+                        {% if form.full_name.errors %}
+                        <div class="reg-field-error">{{ form.full_name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Work Email -->
+                    <div class="reg-form-group">
+                        <label for="id_work_email" class="reg-label">Work email</label>
+                        <div class="reg-input-wrap {% if form.work_email.errors %}has-error{% endif %}">
+                            <span class="reg-input-icon" aria-hidden="true">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                                </svg>
+                            </span>
+                            <input type="email" name="work_email" id="id_work_email"
+                                   class="reg-input"
+                                   value="{{ form.work_email.value|default:'' }}"
+                                   placeholder="jane.doe@company.com"
+                                   required autocomplete="email" spellcheck="false" autocapitalize="none">
+                        </div>
+                        {% if form.work_email.errors %}
+                        <div class="reg-field-error">{{ form.work_email.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Company Name -->
+                    <div class="reg-form-group">
+                        <label for="id_company_name" class="reg-label">Company name</label>
+                        <div class="reg-input-wrap {% if form.company_name.errors %}has-error{% endif %}">
+                            <span class="reg-input-icon" aria-hidden="true">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>
+                                </svg>
+                            </span>
+                            <input type="text" name="company_name" id="id_company_name"
+                                   class="reg-input"
+                                   value="{{ form.company_name.value|default:'' }}"
+                                   placeholder="Acme Laboratories"
+                                   required autocomplete="organization" spellcheck="false">
+                        </div>
+                        {% if form.company_name.errors %}
+                        <div class="reg-field-error">{{ form.company_name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Password + Confirm side-by-side -->
+                    <div class="reg-row">
+                        <!-- Password -->
+                        <div class="reg-form-group reg-col">
+                            <label for="id_password" class="reg-label">Password</label>
+                            <div class="reg-input-wrap {% if form.password.errors %}has-error{% endif %}">
+                                <span class="reg-input-icon" aria-hidden="true">
+                                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                    </svg>
+                                </span>
+                                <input type="password" name="password" id="id_password"
+                                       class="reg-input reg-pw-input"
+                                       placeholder="••••••••"
+                                       required autocomplete="new-password">
+                                <button type="button" class="reg-pw-toggle" data-target="id_password" tabindex="-1" aria-label="Toggle password">
+                                    <svg class="eye-show" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <svg class="eye-hide is-hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+                                </button>
+                            </div>
+                            {% if form.password.errors %}
+                            <div class="reg-field-error">{{ form.password.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="reg-form-group reg-col">
+                            <label for="id_confirm_password" class="reg-label">Confirm password</label>
+                            <div class="reg-input-wrap {% if form.confirm_password.errors %}has-error{% endif %}">
+                                <span class="reg-input-icon" aria-hidden="true">
+                                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                    </svg>
+                                </span>
+                                <input type="password" name="confirm_password" id="id_confirm_password"
+                                       class="reg-input reg-pw-input"
+                                       placeholder="••••••••"
+                                       required autocomplete="new-password">
+                                <button type="button" class="reg-pw-toggle" data-target="id_confirm_password" tabindex="-1" aria-label="Toggle confirm password">
+                                    <svg class="eye-show" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <svg class="eye-hide is-hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+                                </button>
+                            </div>
+                            {% if form.confirm_password.errors %}
+                            <div class="reg-field-error">{{ form.confirm_password.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Compliance Acknowledgement -->
+                    <div class="reg-compliance-group">
+                        <label class="reg-compliance-label" for="id_compliance_ack">
+                            <input type="checkbox" name="compliance_ack" id="id_compliance_ack"
+                                   class="reg-custom-checkbox"
+                                   {% if form.compliance_ack.value %}checked{% endif %}
+                                   required>
+                            <span class="reg-checkbox-box" aria-hidden="true">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                            </span>
+                            <span class="reg-compliance-text">
+                                I understand that my actions are recorded and attributable to me, and that
+                                my electronic signature is binding.
+                            </span>
+                        </label>
+                        {% if form.compliance_ack.errors %}
+                        <div class="reg-field-error reg-field-error--indent">{{ form.compliance_ack.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit" class="reg-btn-submit" id="submitRequestBtn">
+                        Submit request
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="reg-right-footer">
+            <a href="javascript:void(0)" class="reg-footer-link">Help</a>
+            <a href="javascript:void(0)" class="reg-footer-link">Privacy</a>
         </footer>
     </section>
 
-    <!-- Right Column -->
-    <section class="register-right">
-        <div class="register-form-wrapper">
-            {% if form.non_field_errors %}
-            <div class="form-alert-error" role="alert">
-                {% for error in form.non_field_errors %}
-                <p>{{ error }}</p>
-                {% endfor %}
-            </div>
-            {% endif %}
-
-            <form method="post" action="{% url 'register' %}" novalidate class="register-form" id="registerForm">
-                {% csrf_token %}
-
-                <!-- FULL NAME -->
-                <div class="form-group">
-                    <label for="id_full_name" class="form-label">FULL NAME</label>
-                    <input 
-                        type="text" 
-                        name="full_name" 
-                        id="id_full_name" 
-                        class="form-input {% if form.full_name.errors %}input-has-error{% endif %}" 
-                        value="{{ form.full_name.value|default:'' }}" 
-                        required 
-                        autocomplete="name"
-                        spellcheck="false">
-                    {% if form.full_name.errors %}
-                    <div class="field-error-text">{{ form.full_name.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <!-- WORK EMAIL -->
-                <div class="form-group">
-                    <label for="id_work_email" class="form-label">WORK EMAIL</label>
-                    <input 
-                        type="email" 
-                        name="work_email" 
-                        id="id_work_email" 
-                        class="form-input {% if form.work_email.errors %}input-has-error{% endif %}" 
-                        value="{{ form.work_email.value|default:'' }}" 
-                        required 
-                        autocomplete="email"
-                        spellcheck="false"
-                        autocapitalize="none">
-                    {% if form.work_email.errors %}
-                    <div class="field-error-text">{{ form.work_email.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <!-- COMPANY NAME -->
-                <div class="form-group">
-                    <label for="id_company_name" class="form-label">COMPANY NAME</label>
-                    <input 
-                        type="text" 
-                        name="company_name" 
-                        id="id_company_name" 
-                        class="form-input input-company {% if form.company_name.errors %}input-has-error{% endif %}" 
-                        value="{{ form.company_name.value|default:'' }}" 
-                        required 
-                        autocomplete="organization"
-                        spellcheck="false">
-                    {% if form.company_name.errors %}
-                    <div class="field-error-text">{{ form.company_name.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <!-- PASSWORD -->
-                <div class="form-group">
-                    <label for="id_password" class="form-label">PASSWORD</label>
-                    <input 
-                        type="password" 
-                        name="password" 
-                        id="id_password" 
-                        class="form-input {% if form.password.errors %}input-has-error{% endif %}" 
-                        required 
-                        autocomplete="new-password">
-                    {% if form.password.errors %}
-                    <div class="field-error-text">{{ form.password.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <!-- CONFIRM PASSWORD -->
-                <div class="form-group">
-                    <label for="id_confirm_password" class="form-label">CONFIRM PASSWORD</label>
-                    <input 
-                        type="password" 
-                        name="confirm_password" 
-                        id="id_confirm_password" 
-                        class="form-input {% if form.confirm_password.errors %}input-has-error{% endif %}" 
-                        required 
-                        autocomplete="new-password">
-                    {% if form.confirm_password.errors %}
-                    <div class="field-error-text">{{ form.confirm_password.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <!-- COMPLIANCE CHECKBOX -->
-                <div class="compliance-group">
-                    <label class="compliance-label" for="id_compliance_ack">
-                        <input 
-                            type="checkbox" 
-                            name="compliance_ack" 
-                            id="id_compliance_ack" 
-                            class="compliance-checkbox {% if form.compliance_ack.errors %}checkbox-has-error{% endif %}"
-                            {% if form.compliance_ack.value %}checked{% endif %}
-                            required>
-                        <span class="compliance-text">
-                            I understand that my actions are recorded and attributable to me, and that my electronic signature is binding.
-                        </span>
-                    </label>
-                    {% if form.compliance_ack.errors %}
-                    <div class="field-error-text" style="margin-left: 28px;">{{ form.compliance_ack.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <!-- SUBMIT BUTTON -->
-                <button type="submit" class="btn-submit" id="submitRequestBtn">
-                    Submit request
-                </button>
-            </form>
-
-            <!-- FOOTER LINK -->
-            <div class="register-footer-row">
-                <span class="already-approved-text">Already approved?</span>
-                <a href="{% url 'login' %}" class="signin-link" id="signInLink">Sign in</a>
-            </div>
-        </div>
-    </section>
 </div>
 {% endblock %}
 

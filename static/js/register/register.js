@@ -1,74 +1,91 @@
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('registerForm');
     const submitBtn = document.getElementById('submitRequestBtn');
-    const passwordInput = document.getElementById('id_password');
-    const confirmPasswordInput = document.getElementById('id_confirm_password');
-    const complianceAck = document.getElementById('id_compliance_ack');
 
     if (!form) return;
 
-    form.addEventListener('submit', function (e) {
-        let isValid = true;
+    /* ── Password visibility toggles ──────────────────────────────── */
+    form.querySelectorAll('.reg-pw-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const targetId = this.dataset.target;
+            const input = document.getElementById(targetId);
+            if (!input) return;
 
-        // Clear existing client-side error highlights if re-submitting
-        const fieldErrors = form.querySelectorAll('.client-error');
-        fieldErrors.forEach(function (el) { el.remove(); });
+            const isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
 
-        const inputs = form.querySelectorAll('.form-input');
-        inputs.forEach(function (input) {
-            input.classList.remove('input-has-error');
+            const show = this.querySelector('.eye-show');
+            const hide = this.querySelector('.eye-hide');
+            if (show) show.classList.toggle('is-hidden', isHidden);
+            if (hide) hide.classList.toggle('is-hidden', !isHidden);
         });
+    });
 
-        // Check password match
-        if (passwordInput && confirmPasswordInput) {
-            if (passwordInput.value && confirmPasswordInput.value && passwordInput.value !== confirmPasswordInput.value) {
-                isValid = false;
-                confirmPasswordInput.classList.add('input-has-error');
-                const errDiv = document.createElement('div');
-                errDiv.className = 'field-error-text client-error';
-                errDiv.textContent = 'Passwords do not match.';
-                confirmPasswordInput.parentNode.appendChild(errDiv);
+    /* ── Client-side validation on submit ─────────────────────────── */
+    form.addEventListener('submit', function (e) {
+        // Clear previous client-side errors
+        form.querySelectorAll('.client-error').forEach(function (el) { el.remove(); });
+        form.querySelectorAll('.has-error').forEach(function (el) { el.classList.remove('has-error'); });
+
+        let valid = true;
+
+        const pw   = document.getElementById('id_password');
+        const cpw  = document.getElementById('id_confirm_password');
+        const ack  = document.getElementById('id_compliance_ack');
+
+        // Password match
+        if (pw && cpw && pw.value && cpw.value && pw.value !== cpw.value) {
+            valid = false;
+            const wrap = cpw.closest('.reg-input-wrap');
+            if (wrap) wrap.classList.add('has-error');
+            insertError(cpw.closest('.reg-form-group'), 'Passwords do not match.', 'reg-field-error');
+        }
+
+        // Compliance checkbox
+        if (ack && !ack.checked) {
+            valid = false;
+            const group = ack.closest('.reg-compliance-group');
+            if (group && !group.querySelector('.client-error')) {
+                insertError(group, 'You must acknowledge the compliance statement.', 'reg-field-error reg-field-error--indent');
             }
         }
 
-        // Check compliance checkbox
-        if (complianceAck && !complianceAck.checked) {
-            isValid = false;
-            complianceAck.classList.add('checkbox-has-error');
-            const parent = complianceAck.closest('.compliance-group');
-            if (parent && !parent.querySelector('.client-error')) {
-                const errDiv = document.createElement('div');
-                errDiv.className = 'field-error-text client-error';
-                errDiv.style.marginLeft = '28px';
-                errDiv.textContent = 'You must acknowledge that your actions are recorded and attributable.';
-                parent.appendChild(errDiv);
-            }
-        }
-
-        if (!isValid) {
+        if (!valid) {
             e.preventDefault();
             return;
         }
 
-        // Prevent double submit
+        // Prevent double-submit
         if (submitBtn) {
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
+            submitBtn.textContent = 'Submitting…';
         }
     });
 
-    // Remove error class on input
-    const allInputs = form.querySelectorAll('input');
-    allInputs.forEach(function (input) {
+    /* ── Clear error state on user input ──────────────────────────── */
+    form.querySelectorAll('.reg-input').forEach(function (input) {
         input.addEventListener('input', function () {
-            this.classList.remove('input-has-error');
-            this.classList.remove('checkbox-has-error');
-            const parent = this.closest('.form-group') || this.closest('.compliance-group');
-            if (parent) {
-                const err = parent.querySelector('.client-error');
-                if (err) err.remove();
-            }
+            const wrap = this.closest('.reg-input-wrap');
+            if (wrap) wrap.classList.remove('has-error');
+            const group = this.closest('.reg-form-group');
+            if (group) group.querySelectorAll('.client-error').forEach(function (el) { el.remove(); });
         });
     });
-});
 
+    const ack = document.getElementById('id_compliance_ack');
+    if (ack) {
+        ack.addEventListener('change', function () {
+            const group = this.closest('.reg-compliance-group');
+            if (group) group.querySelectorAll('.client-error').forEach(function (el) { el.remove(); });
+        });
+    }
+
+    /* ── Helper ────────────────────────────────────────────────────── */
+    function insertError(parent, message, cssClass) {
+        if (!parent) return;
+        const div = document.createElement('div');
+        div.className = (cssClass || '') + ' client-error';
+        div.textContent = message;
+        parent.appendChild(div);
+    }
+});
