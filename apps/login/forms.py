@@ -43,6 +43,13 @@ class LoginForm(forms.Form):
 
         if username and password:
             self.user = authenticate(username=username, password=password)
+            if self.user is None and '@' in username:
+                from django.contrib.auth.models import User
+                try:
+                    user_obj = User.objects.get(email__iexact=username)
+                    self.user = authenticate(username=user_obj.username, password=password)
+                except (User.DoesNotExist, User.MultipleObjectsReturned):
+                    pass
             if self.user is None:
                 raise forms.ValidationError(
                     "Invalid username or password. Please try again."

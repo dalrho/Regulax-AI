@@ -1,18 +1,163 @@
 {% extends "base/base.html" %}
+{% load static %}
 
-{% block title %}Request Access - Regulax AI{% endblock %}
+{% block title %}Create Account - Regulax AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/register/register.css' %}">
+{% endblock %}
 
 {% block content %}
-<div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #f9fafb; font-family: inherit; padding: 24px;">
-    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 36px; max-width: 480px; width: 100%; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 24px;">
-            <div style="width: 28px; height: 28px; background: #18181b; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px;">R</div>
-            <span style="font-weight: 600; font-size: 16px; color: #111827;">Regulax AI</span>
+<div class="register-page-container">
+    <!-- Left Column -->
+    <section class="register-left">
+        <header class="brand-header">
+            <span class="brand-name">Regulax AI</span>
+        </header>
+
+        <div class="hero-center">
+            <h1 class="hero-title">
+                Create<br>Account
+            </h1>
+            <div class="hero-divider" aria-hidden="true"></div>
         </div>
-        <h2 style="font-size: 24px; font-weight: 700; color: #111827; margin-bottom: 8px;">Request Access</h2>
-        <p style="color: #6b7280; font-size: 14px; margin-bottom: 24px;">Please contact your compliance or laboratory administrator to provision your individual Regulax AI account.</p>
-        <a href="{% url 'login' %}" style="display: inline-block; padding: 10px 20px; background: #18181b; color: white; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 500;">Back to Sign in</a>
-    </div>
+
+        <footer class="left-footer">
+            <p class="footer-note">Accounts are individual and never shared.</p>
+        </footer>
+    </section>
+
+    <!-- Right Column -->
+    <section class="register-right">
+        <div class="register-form-wrapper">
+            {% if form.non_field_errors %}
+            <div class="form-alert-error" role="alert">
+                {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'register' %}" novalidate class="register-form" id="registerForm">
+                {% csrf_token %}
+
+                <!-- FULL NAME -->
+                <div class="form-group">
+                    <label for="id_full_name" class="form-label">FULL NAME</label>
+                    <input 
+                        type="text" 
+                        name="full_name" 
+                        id="id_full_name" 
+                        class="form-input {% if form.full_name.errors %}input-has-error{% endif %}" 
+                        value="{{ form.full_name.value|default:'' }}" 
+                        required 
+                        autocomplete="name"
+                        spellcheck="false">
+                    {% if form.full_name.errors %}
+                    <div class="field-error-text">{{ form.full_name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- WORK EMAIL -->
+                <div class="form-group">
+                    <label for="id_work_email" class="form-label">WORK EMAIL</label>
+                    <input 
+                        type="email" 
+                        name="work_email" 
+                        id="id_work_email" 
+                        class="form-input {% if form.work_email.errors %}input-has-error{% endif %}" 
+                        value="{{ form.work_email.value|default:'' }}" 
+                        required 
+                        autocomplete="email"
+                        spellcheck="false"
+                        autocapitalize="none">
+                    {% if form.work_email.errors %}
+                    <div class="field-error-text">{{ form.work_email.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- COMPANY NAME -->
+                <div class="form-group">
+                    <label for="id_company_name" class="form-label">COMPANY NAME</label>
+                    <input 
+                        type="text" 
+                        name="company_name" 
+                        id="id_company_name" 
+                        class="form-input input-company {% if form.company_name.errors %}input-has-error{% endif %}" 
+                        value="{{ form.company_name.value|default:'' }}" 
+                        required 
+                        autocomplete="organization"
+                        spellcheck="false">
+                    {% if form.company_name.errors %}
+                    <div class="field-error-text">{{ form.company_name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- PASSWORD -->
+                <div class="form-group">
+                    <label for="id_password" class="form-label">PASSWORD</label>
+                    <input 
+                        type="password" 
+                        name="password" 
+                        id="id_password" 
+                        class="form-input {% if form.password.errors %}input-has-error{% endif %}" 
+                        required 
+                        autocomplete="new-password">
+                    {% if form.password.errors %}
+                    <div class="field-error-text">{{ form.password.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- CONFIRM PASSWORD -->
+                <div class="form-group">
+                    <label for="id_confirm_password" class="form-label">CONFIRM PASSWORD</label>
+                    <input 
+                        type="password" 
+                        name="confirm_password" 
+                        id="id_confirm_password" 
+                        class="form-input {% if form.confirm_password.errors %}input-has-error{% endif %}" 
+                        required 
+                        autocomplete="new-password">
+                    {% if form.confirm_password.errors %}
+                    <div class="field-error-text">{{ form.confirm_password.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- COMPLIANCE CHECKBOX -->
+                <div class="compliance-group">
+                    <label class="compliance-label" for="id_compliance_ack">
+                        <input 
+                            type="checkbox" 
+                            name="compliance_ack" 
+                            id="id_compliance_ack" 
+                            class="compliance-checkbox {% if form.compliance_ack.errors %}checkbox-has-error{% endif %}"
+                            {% if form.compliance_ack.value %}checked{% endif %}
+                            required>
+                        <span class="compliance-text">
+                            I understand that my actions are recorded and attributable to me, and that my electronic signature is binding.
+                        </span>
+                    </label>
+                    {% if form.compliance_ack.errors %}
+                    <div class="field-error-text" style="margin-left: 28px;">{{ form.compliance_ack.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- SUBMIT BUTTON -->
+                <button type="submit" class="btn-submit" id="submitRequestBtn">
+                    Submit request
+                </button>
+            </form>
+
+            <!-- FOOTER LINK -->
+            <div class="register-footer-row">
+                <span class="already-approved-text">Already approved?</span>
+                <a href="{% url 'login' %}" class="signin-link" id="signInLink">Sign in</a>
+            </div>
+        </div>
+    </section>
 </div>
 {% endblock %}
 
+{% block extra_js %}
+<script src="{% static 'js/register/register.js' %}"></script>
+{% endblock %}
