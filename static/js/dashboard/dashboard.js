@@ -119,17 +119,6 @@
     });
 
     /* ------------------------------------------------------------------
-       Sidebar search shortcut: Ctrl + K
-    ------------------------------------------------------------------ */
-    document.addEventListener('keydown', function (e) {
-        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-            e.preventDefault();
-            const searchEl = document.querySelector('.sidebar-search');
-            if (searchEl) searchEl.focus();
-        }
-    });
-
-    /* ------------------------------------------------------------------
        Init
     ------------------------------------------------------------------ */
     setGreeting();
