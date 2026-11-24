@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'apps.register.apps.RegisterConfig',
     'apps.workspaces.apps.WorkspacesConfig',
     'apps.documents.apps.DocumentsConfig',
+    'apps.regulations.apps.RegulationsConfig',
     'apps.dashboard.apps.DashboardConfig',
 ]
 
