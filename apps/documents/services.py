@@ -3,7 +3,7 @@ import hashlib
 from django.conf import settings
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
-from django.db.models import Max
+from django.db.models import Max, Q
 
 from apps.workspaces.models import Membership
 
@@ -129,7 +129,9 @@ def list_sops(*, user, workspace, include_archived=False, search=''):
         queryset = queryset.filter(is_archived=False)
     search = (search or '').strip()
     if search:
-        queryset = queryset.filter(title__icontains=search)
+        normalized_id = search.upper().removeprefix('SOP-')
+        id_match = Q(pk=int(normalized_id)) if normalized_id.isdigit() else Q(pk__in=[])
+        queryset = queryset.filter(Q(title__icontains=search) | id_match)
     return queryset.prefetch_related('versions').order_by('title', 'pk')
 
 

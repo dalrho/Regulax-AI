@@ -1,0 +1,62 @@
+.sop-main { padding-top: 42px; }
+.sop-header,.sop-detail-header { display:flex; align-items:flex-start; justify-content:space-between; gap:24px; margin:0 0 24px; }
+.sop-header h1,.sop-detail-header h1 { margin:0 0 5px; color:#111827; font-size:32px; font-weight:750; letter-spacing:-.04em; line-height:1.12; }
+.sop-header p,.sop-detail-header p { color:#6b7280; font-size:14px; margin:0; }
+.sop-header .btn-primary { padding:11px 20px; border:0; border-radius:9px; background:#111318; color:white; font-weight:600; cursor:pointer; }
+.sop-header .btn-primary:hover,.sop-upload-dialog .btn-primary:hover { background:#30343b; }
+.sop-toolbar { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+.sop-search-form { display:flex; gap:8px; }
+.sop-search-form input { width:min(340px, 35vw); padding:10px 13px; border:1px solid #dfe3e8; border-radius:9px; background:white; color:#111827; font:inherit; outline:none; }
+.sop-search-form input:focus,.sop-upload-dialog input:focus,.sop-upload-dialog textarea:focus { border-color:#969da8; box-shadow:0 0 0 3px #11182712; }
+.sop-search-form .btn-outline,.sop-detail-header .btn-outline,.sop-upload-dialog .btn-outline { padding:9px 13px; border:1px solid #dfe3e8; border-radius:8px; background:#fff; color:#272b33; font:inherit; cursor:pointer; }
+.sop-result-count { color:#374151; font-size:14px; white-space:nowrap; }
+.sop-archive-toggle { margin-left:auto; color:#667085; font-size:13px; text-decoration:none; }
+.sop-archive-toggle:hover,.sop-back-link:hover { color:#111827; text-decoration:underline; }
+.sop-table-wrap { overflow-x:auto; border:1px solid #e0e4e9; border-radius:12px; background:#fff; }
+.sop-table { width:100%; min-width:720px; border-collapse:collapse; text-align:left; }
+.sop-table th { height:39px; padding:0 17px; background:#f8f9fb; color:#8a93a2; font-size:11px; font-weight:650; letter-spacing:.055em; text-transform:uppercase; }
+.sop-table td { height:53px; padding:8px 17px; border-top:1px solid #e4e7ec; color:#111827; font-size:14px; }
+.sop-table tbody tr:hover { background:#fbfcfd; }
+.sop-id,.sop-version { color:#8290a5!important; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px!important; }
+.sop-title-link { color:#111827; font-weight:650; text-decoration:none; }
+.sop-title-link:hover { text-decoration:underline; }
+.sop-category { display:block; margin-top:3px; color:#87909e; font-size:11px; }
+.sop-status { display:inline-flex; align-items:center; padding:3px 10px; border:1px solid #e2e5e9; border-radius:20px; background:#f4f5f6; color:#3b414a; font-size:11px; font-weight:650; white-space:nowrap; }
+.sop-row-action { width:50px; text-align:center; }
+.sop-row-action form { display:inline; }
+.icon-button { width:32px; height:30px; border:0; border-radius:6px; background:transparent; color:#87909e; font-size:19px; line-height:1; cursor:pointer; }
+.icon-button:hover { background:#f0f1f3; color:#111827; }
+.sop-archived-label { color:#8a93a2; font-size:11px; }
+.sop-empty { height:100px!important; color:#6b7280!important; text-align:center; }
+.sop-error,.sop-flashes { margin:0 0 14px; padding:10px 14px; border-radius:8px; font-size:13px; }
+.sop-error { border:1px solid #f0b7b7; background:#fff5f5; color:#a32929; }
+.sop-flashes { border:1px solid #b9dfc5; background:#f3fbf5; color:#25683a; }
+.sop-error p,.sop-flashes p { margin:2px 0; }
+.side-icon { width:15px; flex:none; color:#8b94a2; font-size:15px; line-height:1; text-align:center; }
+.unavailable-link { opacity:.55; cursor:not-allowed; pointer-events:none; }
+.sop-upload-dialog { width:min(540px,calc(100% - 32px)); max-width:none; max-height:calc(100% - 32px); padding:0; border:1px solid #e1e4e8; border-radius:14px; box-shadow:0 24px 80px #11182733; }
+.sop-upload-dialog::backdrop { background:#11182766; }
+.sop-upload-dialog form { display:flex; flex-direction:column; gap:9px; padding:24px; }
+.sop-upload-dialog header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; }
+.sop-upload-dialog h2 { margin:0 0 4px; color:#151922; font-size:21px; }
+.sop-upload-dialog header p { margin:0; color:#78808d; font-size:13px; }
+.sop-upload-dialog label { margin-top:6px; color:#353b45; font-size:12px; font-weight:650; }
+.sop-upload-dialog label span { color:#8c94a1; font-weight:400; }
+.sop-upload-dialog input:not([type=file]),.sop-upload-dialog textarea { width:100%; box-sizing:border-box; padding:10px 11px; border:1px solid #dfe3e8; border-radius:8px; background:white; color:#171a20; font:inherit; font-size:13px; outline:none; }
+.sop-upload-dialog input[type=file] { color:#5c6471; font-size:12px; }
+.sop-upload-dialog textarea { resize:vertical; }
+.sop-upload-dialog footer { display:flex; justify-content:flex-end; gap:8px; margin-top:10px; }
+.sop-upload-dialog footer .btn-primary { padding:10px 16px; border:0; border-radius:8px; background:#111318; color:white; font-weight:600; cursor:pointer; }
+.sop-back-link { display:inline-block; margin-bottom:22px; color:#667085; font-size:13px; text-decoration:none; }
+.sop-detail-header { align-items:center; padding:0 0 23px; border-bottom:1px solid #dfe3e8; }
+.sop-detail-header .sop-id { display:block; margin-bottom:7px; }
+.sop-version-list { max-width:900px; }
+.sop-version-list > h2 { margin:22px 0 12px; color:#252a32; font-size:16px; }
+.sop-version-card { margin-bottom:12px; padding:18px 20px; border:1px solid #e0e4e9; border-radius:11px; background:#fff; }
+.sop-version-heading { display:flex; align-items:center; gap:12px; }
+.sop-version-heading h3 { margin:0; color:#171a20; font-size:15px; }
+.sop-version-heading time { margin-left:auto; color:#858d99; font-size:12px; }
+.sop-processing-note { color:#707987; font-size:12px; }
+.sop-version-card details summary { color:#343b46; font-size:13px; cursor:pointer; }
+.sop-version-card pre { max-height:480px; overflow:auto; margin:12px 0 0; padding:14px; border-radius:8px; background:#f7f8fa; color:#343b46; font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace; white-space:pre-wrap; overflow-wrap:anywhere; }
+@media(max-width:700px) { .sop-main{padding:28px 18px}.sop-header h1,.sop-detail-header h1{font-size:27px}.sop-header,.sop-detail-header{align-items:flex-start}.sop-toolbar{flex-wrap:wrap}.sop-search-form{width:100%}.sop-search-form input{width:100%;min-width:0}.sop-result-count{order:2}.sop-archive-toggle{order:3}.sop-detail-header{flex-direction:column}.sop-version-heading{flex-wrap:wrap}.sop-version-heading time{margin-left:0} }

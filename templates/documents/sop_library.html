@@ -1,0 +1,37 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block title %}SOP Library - Regulax AI{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/dashboard/dashboard.css' %}"><link rel="stylesheet" href="{% static 'css/documents/sop_library.css' %}">{% endblock %}
+{% block content %}
+<div class="dashboard-shell">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><div class="sidebar-logo"><span class="sidebar-logo-mark">R</span></div><div class="sidebar-brand-text"><span class="sidebar-brand-name">Regulax AI</span><span class="sidebar-brand-sub">QA workspace</span></div></div>
+        <div class="sidebar-section-label">Workspace</div>
+        <nav class="sidebar-nav" aria-label="Workspace navigation">
+            <a href="{% url 'dashboard' %}" class="sidebar-nav-item"><span class="side-icon">▦</span><span class="sidebar-nav-label">Overview</span></a>
+            <a href="{% url 'sop_library' %}" class="sidebar-nav-item is-active" aria-current="page"><span class="side-icon">▤</span><span class="sidebar-nav-label">SOP Library</span><span class="sidebar-badge">{{ sop_count }}</span></a>
+            <a href="#" class="sidebar-nav-item unavailable-link" aria-disabled="true" title="Regulatory Library is not available yet"><span class="side-icon">▣</span><span class="sidebar-nav-label">Regulatory Library</span><span class="sidebar-badge">0</span></a>
+            <a href="#" class="sidebar-nav-item unavailable-link" aria-disabled="true" title="Assessments are not available yet"><span class="side-icon">☑</span><span class="sidebar-nav-label">Assessments</span><span class="sidebar-badge">0</span></a>
+        </nav>
+        <div class="sidebar-section-label" style="margin-top:10px">Quick Links</div>
+        <nav class="sidebar-nav" aria-label="Quick links"><a href="#" class="sidebar-nav-item unavailable-link" aria-disabled="true"><span class="side-icon">◷</span><span class="sidebar-nav-label">History</span></a><a href="#" class="sidebar-nav-item unavailable-link" aria-disabled="true"><span class="side-icon">☆</span><span class="sidebar-nav-label">Starred findings</span></a></nav>
+        <div class="sidebar-spacer"></div>
+        <div class="sidebar-bottom">
+            {% if membership.role == 'owner' %}<a href="{% url 'workspace_settings' %}" class="sidebar-nav-item sidebar-settings-link"><span class="side-icon">⚙</span><span class="sidebar-nav-label">Workspace Settings</span></a>{% endif %}
+            <div class="sidebar-user"><div class="sidebar-avatar">{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}</div><div class="sidebar-user-info"><span class="sidebar-user-name">{{ user.get_full_name|default:user.username }}</span><a href="{% url 'logout' %}" class="sidebar-user-signout">Sign out</a></div></div>
+        </div>
+    </aside>
+    <main class="dashboard-main sop-main">
+        <header class="sop-header"><div><h1>SOP Library</h1><p>Every procedure you have uploaded, with its latest processing status.</p></div><button class="btn-primary" type="button" id="openUpload">Upload SOP</button></header>
+        {% if messages %}<div class="sop-flashes" role="status">{% for message in messages %}<p>{{ message }}</p>{% endfor %}</div>{% endif %}
+        <div class="sop-toolbar"><form method="get" class="sop-search-form"><label class="visually-hidden" for="sopSearch">Search SOPs by name or ID</label><input id="sopSearch" type="search" name="q" value="{{ query }}" placeholder="Search SOPs by name or ID"><button type="submit" class="btn-outline">Search</button></form><span class="sop-result-count">{{ sops|length }} result{{ sops|length|pluralize }}</span><a class="sop-archive-toggle" href="{% url 'sop_library' %}{% if query %}?q={{ query|urlencode }}&{% else %}?{% endif %}archived={% if include_archived %}0{% else %}1{% endif %}">{% if include_archived %}Show active{% else %}Show archived{% endif %}</a></div>
+        {% if upload_errors %}<div class="sop-error" role="alert">{% for error in upload_errors %}<p>{{ error }}</p>{% endfor %}</div>{% endif %}
+        <div class="sop-table-wrap"><table class="sop-table"><thead><tr><th>ID</th><th>Name</th><th>Version</th><th>Uploaded</th><th>Status</th><th><span class="visually-hidden">Actions</span></th></tr></thead><tbody>
+        {% for sop in sops %}<tr><td class="sop-id">SOP-{{ sop.pk|stringformat:"03d" }}</td><td><a class="sop-title-link" href="{% url 'sop_detail' sop.pk %}">{{ sop.title }}</a>{% if sop.category %}<small class="sop-category">{{ sop.category }}</small>{% endif %}</td><td class="sop-version">{% if sop.latest_version %}v{{ sop.latest_version.version_number }}{% else %}—{% endif %}</td><td>{{ sop.updated_at|date:"M j" }}</td><td><span class="sop-status">Stored</span></td><td class="sop-row-action">{% if not sop.is_archived %}<form method="post" action="{% url 'sop_archive' sop.pk %}" onsubmit="return confirm('Archive {{ sop.title|escapejs }}?')">{% csrf_token %}<button type="submit" class="icon-button" aria-label="Archive {{ sop.title }}" title="Archive SOP">···</button></form>{% else %}<span class="sop-archived-label">Archived</span>{% endif %}</td></tr>
+        {% empty %}<tr><td colspan="6" class="sop-empty">{% if query %}No SOPs match “{{ query }}”.{% else %}No SOPs here yet. Upload your first procedure to get started.{% endif %}</td></tr>{% endfor %}
+        </tbody></table></div>
+    </main>
+</div>
+<dialog class="sop-upload-dialog" id="uploadDialog" aria-labelledby="uploadDialogTitle"><form method="post" enctype="multipart/form-data">{% csrf_token %}<header><div><h2 id="uploadDialogTitle">Upload an SOP</h2><p>Add a UTF-8 text file or paste the procedure.</p></div><button type="button" class="icon-button" id="closeUpload" aria-label="Close">×</button></header><label for="sopTitle">Name</label><input id="sopTitle" name="title" maxlength="200" placeholder="e.g. Batch Record Review"><label for="sopCategory">Category <span>(optional)</span></label><input id="sopCategory" name="category" maxlength="150" placeholder="e.g. Production"><label for="sopFile">Text file <span>(.txt, up to 1 MiB)</span></label><input id="sopFile" type="file" name="file" accept=".txt,text/plain"><label for="sopText">Or paste SOP text</label><textarea id="sopText" name="text" rows="7" placeholder="Paste the procedure text here"></textarea><footer><button type="button" class="btn-outline" id="cancelUpload">Cancel</button><button type="submit" class="btn-primary">Save SOP</button></footer></form></dialog>
+{% endblock %}
+{% block extra_js %}<script src="{% static 'js/documents/sop_library.js' %}"></script>{% endblock %}
