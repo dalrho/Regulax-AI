@@ -1,9 +1,53 @@
 {% extends "base/base.html" %}
 {% load static %}
 {% block title %}{{ sop.title }} - SOP Library{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/dashboard/dashboard.css' %}"><link rel="stylesheet" href="{% static 'css/documents/sop_library.css' %}">{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/documents/sop_library.css' %}">
+{% endblock %}
 {% block content %}
-<div class="dashboard-shell"><aside class="sidebar"><div class="sidebar-brand"><div class="sidebar-logo"><span class="sidebar-logo-mark">R</span></div><div class="sidebar-brand-text"><span class="sidebar-brand-name">Regulax AI</span><span class="sidebar-brand-sub">QA workspace</span></div></div><div class="sidebar-section-label">Workspace</div><nav class="sidebar-nav" aria-label="Workspace navigation"><a href="{% url 'dashboard' %}" class="sidebar-nav-item"><span class="side-icon">▦</span><span class="sidebar-nav-label">Overview</span></a><a href="{% url 'sop_library' %}" class="sidebar-nav-item is-active" aria-current="page"><span class="side-icon">▤</span><span class="sidebar-nav-label">SOP Library</span></a><a href="#" class="sidebar-nav-item unavailable-link" aria-disabled="true"><span class="side-icon">▣</span><span class="sidebar-nav-label">Regulatory Library</span></a><a href="#" class="sidebar-nav-item unavailable-link" aria-disabled="true"><span class="side-icon">☑</span><span class="sidebar-nav-label">Assessments</span></a></nav><div class="sidebar-section-label" style="margin-top:10px">Quick Links</div><nav class="sidebar-nav" aria-label="Quick links"><a href="#" class="sidebar-nav-item unavailable-link" aria-disabled="true"><span class="side-icon">◷</span><span class="sidebar-nav-label">History</span></a><a href="#" class="sidebar-nav-item unavailable-link" aria-disabled="true"><span class="side-icon">☆</span><span class="sidebar-nav-label">Starred findings</span></a></nav><div class="sidebar-spacer"></div><div class="sidebar-bottom">{% if membership.role == 'owner' %}<a href="{% url 'workspace_settings' %}" class="sidebar-nav-item sidebar-settings-link"><span class="side-icon">⚙</span><span class="sidebar-nav-label">Workspace Settings</span></a>{% endif %}<div class="sidebar-user"><div class="sidebar-avatar">{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}</div><div class="sidebar-user-info"><span class="sidebar-user-name">{{ user.get_full_name|default:user.username }}</span><a href="{% url 'logout' %}" class="sidebar-user-signout">Sign out</a></div></div></div></aside>
-<main class="dashboard-main sop-main"><a class="sop-back-link" href="{% url 'sop_library' %}">← SOP Library</a><header class="sop-detail-header"><div><span class="sop-id">SOP-{{ sop.pk|stringformat:"03d" }}</span><h1>{{ sop.title }}</h1><p>{% if sop.category %}{{ sop.category }} · {% endif %}Created {{ sop.created_at|date:"M j, Y" }} by {{ sop.created_by.get_full_name|default:sop.created_by.username }}</p></div>{% if not sop.is_archived %}<form method="post" action="{% url 'sop_archive' sop.pk %}" onsubmit="return confirm('Archive this SOP?')">{% csrf_token %}<button class="btn-outline" type="submit">Archive SOP</button></form>{% else %}<span class="sop-status">Archived</span>{% endif %}</header>
-<section class="sop-version-list"><h2>Versions</h2>{% for version in versions %}<article class="sop-version-card"><div class="sop-version-heading"><h3>v{{ version.version_number }}</h3><span class="sop-status">Stored</span><time>{{ version.created_at|date:"M j, Y · g:i A" }}</time></div><p class="sop-processing-note">Content is saved. Assessment preparation is not available yet.</p><details><summary>View procedure text</summary><pre>{{ version.canonical_text }}</pre></details></article>{% empty %}<p>No saved versions.</p>{% endfor %}</section></main></div>
+<div class="dashboard-shell">
+    <aside class="sidebar">
+        <div class="sidebar-brand"><div class="sidebar-logo"><span class="sidebar-logo-mark">R</span></div><div class="sidebar-brand-text"><span class="sidebar-brand-name">Regulax AI</span><span class="sidebar-brand-sub">QA workspace</span></div></div>
+        <div class="sidebar-section-label">Workspace</div>
+        <nav class="sidebar-nav" aria-label="Workspace navigation">
+            <a href="{% url 'dashboard' %}" class="sidebar-nav-item">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.2"></rect><rect x="14" y="3" width="7" height="7" rx="1.2"></rect><rect x="3" y="14" width="7" height="7" rx="1.2"></rect><rect x="14" y="14" width="7" height="7" rx="1.2"></rect></svg>
+                <span class="sidebar-nav-label">Overview</span>
+            </a>
+            <a href="{% url 'sop_library' %}" class="sidebar-nav-item is-active" aria-current="page">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                <span class="sidebar-nav-label">SOP Library</span>
+            </a>
+            <a href="#" class="sidebar-nav-item unavailable-link" aria-disabled="true" title="Regulatory Library is not available yet">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                <span class="sidebar-nav-label">Regulatory Library</span>
+            </a>
+            <a href="#" class="sidebar-nav-item unavailable-link" aria-disabled="true" title="Assessments are not available yet">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                <span class="sidebar-nav-label">Assessments</span>
+            </a>
+        </nav>
+        <div class="sidebar-section-label" style="margin-top:10px">Quick Links</div>
+        <nav class="sidebar-nav" aria-label="Quick links">
+            <a href="#" class="sidebar-nav-item unavailable-link" aria-disabled="true" title="History is not available yet">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <span class="sidebar-nav-label">History</span>
+            </a>
+        </nav>
+        <div class="sidebar-spacer"></div>
+        <div class="sidebar-bottom">
+            {% if membership.role == 'owner' %}<a href="{% url 'workspace_settings' %}" class="sidebar-nav-item sidebar-settings-link">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a2 2 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"></path></svg>
+                <span class="sidebar-nav-label">Workspace Settings</span>
+            </a>{% endif %}
+            <div class="sidebar-user"><div class="sidebar-avatar">{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}</div><div class="sidebar-user-info"><span class="sidebar-user-name">{{ user.get_full_name|default:user.username }}</span><a href="{% url 'logout' %}" class="sidebar-user-signout">Sign out</a></div></div>
+        </div>
+    </aside>
+    <main class="dashboard-main sop-main">
+        <a class="sop-back-link" href="{% url 'sop_library' %}">← SOP Library</a>
+        <header class="sop-detail-header"><div><span class="sop-id">SOP-{{ sop.pk|stringformat:"03d" }}</span><h1>{{ sop.title }}</h1><p>{% if sop.category %}{{ sop.category }} · {% endif %}Created {{ sop.created_at|date:"M j, Y" }} by {{ sop.created_by.get_full_name|default:sop.created_by.username }}</p></div>{% if not sop.is_archived %}<form method="post" action="{% url 'sop_archive' sop.pk %}" onsubmit="return confirm('Archive this SOP?')">{% csrf_token %}<button class="btn-outline" type="submit">Archive SOP</button></form>{% else %}<span class="sop-status">Archived</span>{% endif %}</header>
+        <section class="sop-version-list"><h2>Versions</h2>{% for version in versions %}<article class="sop-version-card"><div class="sop-version-heading"><h3>v{{ version.version_number }}</h3><span class="sop-status">Stored</span><time>{{ version.created_at|date:"M j, Y · g:i A" }}</time></div><p class="sop-processing-note">Content is saved. Assessment preparation is not available yet.</p><details><summary>View procedure text</summary><pre>{{ version.canonical_text }}</pre></details></article>{% empty %}<p>No saved versions.</p>{% endfor %}</section>
+    </main>
+</div>
 {% endblock %}

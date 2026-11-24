@@ -32,7 +32,6 @@
 .sop-error { border:1px solid #f0b7b7; background:#fff5f5; color:#a32929; }
 .sop-flashes { border:1px solid #b9dfc5; background:#f3fbf5; color:#25683a; }
 .sop-error p,.sop-flashes p { margin:2px 0; }
-.side-icon { width:15px; flex:none; color:#8b94a2; font-size:15px; line-height:1; text-align:center; }
 .unavailable-link { opacity:.55; cursor:not-allowed; pointer-events:none; }
 .sop-upload-dialog { width:min(540px,calc(100% - 32px)); max-width:none; max-height:calc(100% - 32px); padding:0; border:1px solid #e1e4e8; border-radius:14px; box-shadow:0 24px 80px #11182733; }
 .sop-upload-dialog::backdrop { background:#11182766; }
