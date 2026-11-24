@@ -31,12 +31,12 @@ class LoginViewTests(TestCase):
         self.assertIn('A complete, time-stamped audit trail', content)
         self.assertIn('Role-based access, individual accounts', content)
         self.assertIn('Sign in', content)
-        self.assertIn('Use your individual account. Accounts are never shared.', content)
-        self.assertIn('firstname.lastname', content)
-        self.assertIn('Remember username', content)
+        self.assertIn('Use your individual work email account. Accounts are never shared.', content)
+        self.assertIn('name@company.com', content)
+        self.assertIn('Remember email', content)
         self.assertIn('Forgot password?', content)
         self.assertIn('Two-step verification is required.', content)
-        self.assertIn('Request access', content)
+        self.assertIn('Sign up', content)
 
     def test_login_successful_redirects_to_dashboard(self):
         response = self.client.post(
