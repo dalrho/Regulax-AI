@@ -104,14 +104,14 @@
 
         <!-- Bottom -->
         <div class="sidebar-bottom">
-            <a href="javascript:void(0)" class="sidebar-nav-item sidebar-settings-link">
+            {% if membership.role == 'owner' %}<a href="{% url 'workspace_settings' %}" class="sidebar-nav-item sidebar-settings-link">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="3"></circle>
                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                 </svg>
                 <span class="sidebar-nav-label">Workspace Settings</span>
-            </a>
+            </a>{% endif %}
 
             <div class="sidebar-user">
                 <div class="sidebar-avatar" aria-hidden="true">
@@ -132,7 +132,7 @@
         <div class="dash-page-header">
             <div class="dash-greeting-block">
                 <h1 class="dash-greeting" id="dashGreeting">Good afternoon.</h1>
-                <p class="dash-greeting-sub">Your workspace is ready for its first document.</p>
+                <p class="dash-greeting-sub">{{ workspace.company_name }} workspace</p>
                 <p class="dash-stats">
                     <span>0 SOPs</span>
                     <span class="dash-stats-dot">·</span>

@@ -6,5 +6,6 @@ urlpatterns = [
     path('', include('apps.login.urls')),
     path('register/', include('apps.register.urls')),
     path('dashboard/', include('apps.dashboard.urls')),
+    path('workspace/', include('apps.workspaces.urls')),
 ]
 

@@ -4,9 +4,14 @@ Django settings for regulax_ai project.
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load local development settings from .env while allowing the process
+# environment (for example, production secrets) to take precedence.
+load_dotenv(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -28,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.login.apps.LoginConfig',
     'apps.register.apps.RegisterConfig',
+    'apps.workspaces.apps.WorkspacesConfig',
     'apps.dashboard.apps.DashboardConfig',
 ]
 
@@ -61,9 +67,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
+# Database. SQLite remains the zero-configuration local fallback; set
+# DATABASE_URL to the Supabase PostgreSQL connection URI to use Supabase.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -74,11 +79,14 @@ DATABASES = {
 # Optional database URL override if dj_database_url is installed
 DATABASE_URL = os.environ.get('DATABASE_URL')
 if DATABASE_URL:
-    try:
-        import dj_database_url
-        DATABASES['default'] = dj_database_url.parse(DATABASE_URL)
-    except ImportError:
-        pass
+    import dj_database_url
+    DATABASES['default'] = dj_database_url.parse(
+        DATABASE_URL,
+        conn_max_age=600,
+        conn_health_checks=True,
+        disable_server_side_cursors=True,
+        ssl_require=True,
+    )
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

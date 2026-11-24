@@ -3,7 +3,9 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from .models import UserProfile
+from apps.workspaces.models import Workspace, Membership
 
 
 class RegisterForm(forms.Form):
@@ -132,6 +134,7 @@ class RegisterForm(forms.Form):
             counter += 1
         return candidate
 
+    @transaction.atomic
     def save(self):
         full_name = self.cleaned_data['full_name'].strip()
         email = self.cleaned_data['work_email']
@@ -158,6 +161,9 @@ class RegisterForm(forms.Form):
             company_name=company_name,
             compliance_acknowledged=True,
         )
+
+        workspace = Workspace.objects.create(company_name=company_name)
+        Membership.objects.create(user=user, workspace=workspace, role=Membership.Role.OWNER)
 
         return user
 
