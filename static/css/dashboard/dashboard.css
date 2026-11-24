@@ -497,6 +497,27 @@
 
 .modal-body { padding: 20px 24px; }
 
+.upload-field-label {
+    display: block;
+    margin: 0 0 6px;
+    color: #374151;
+    font-size: 12.5px;
+    font-weight: 600;
+}
+
+.upload-title-input {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0 0 14px;
+    padding: 9px 11px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    color: #111827;
+    font: 13px var(--font-sans);
+}
+
+.upload-title-input:focus { outline: 2px solid #11182714; border-color: #6b7280; }
+
 .upload-drop-area {
     border: 1.5px dashed #d1d5db;
     border-radius: 8px;

@@ -37,14 +37,14 @@
                 </svg>
                 <span class="sidebar-nav-label">Overview</span>
             </a>
-            <a href="javascript:void(0)" class="sidebar-nav-item">
+            <a href="{% url 'sop_library' %}" class="sidebar-nav-item">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
                 </svg>
                 <span class="sidebar-nav-label">SOP Library</span>
-                <span class="sidebar-badge">0</span>
+                <span class="sidebar-badge">{{ sop_count }}</span>
             </a>
             <a href="javascript:void(0)" class="sidebar-nav-item">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -189,12 +189,15 @@
 <!-- ===================== UPLOAD SOP MODAL ===================== -->
 <div class="modal-backdrop" id="uploadModalBackdrop" style="display:none;"
     role="dialog" aria-modal="true" aria-labelledby="uploadModalTitle">
-    <div class="modal-box upload-modal-box">
+    <form class="modal-box upload-modal-box" id="dashboardSopUploadForm" method="post" action="{% url 'sop_library' %}" enctype="multipart/form-data">
+        {% csrf_token %}
         <div class="modal-header">
             <h3 class="modal-title" id="uploadModalTitle">Upload an SOP</h3>
             <button type="button" class="modal-close-btn" id="uploadModalClose" aria-label="Close">&times;</button>
         </div>
         <div class="modal-body">
+            <label for="dashboardSopTitle" class="upload-field-label">SOP name</label>
+            <input type="text" id="dashboardSopTitle" name="title" class="upload-title-input" maxlength="200" required placeholder="e.g. Batch Record Review">
             <div class="upload-drop-area" id="uploadDropArea">
                 <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="upload-icon">
@@ -205,17 +208,17 @@
                 <p class="upload-drop-text">Drag &amp; drop a <strong>.txt</strong> file here</p>
                 <p class="upload-drop-or">or</p>
                 <label class="btn-choose-file" for="sopFileInput">Choose file</label>
-                <input type="file" id="sopFileInput" accept=".txt" class="visually-hidden">
+                <input type="file" id="sopFileInput" name="file" accept=".txt,text/plain" class="visually-hidden">
             </div>
             <div class="upload-divider"><span>or paste text</span></div>
-            <textarea class="upload-textarea" id="sopTextarea"
+            <textarea class="upload-textarea" id="sopTextarea" name="text"
                 placeholder="Paste your SOP text here…" rows="6"></textarea>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn-modal-cancel" id="uploadModalCancel">Cancel</button>
-            <button type="button" class="btn-modal-action" id="uploadModalSubmit">Upload SOP</button>
+            <button type="submit" class="btn-modal-action" id="uploadModalSubmit">Upload SOP</button>
         </div>
-    </div>
+    </form>
 </div>
 {% endblock %}
 

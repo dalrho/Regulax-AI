@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from apps.workspaces.services import ensure_personal_workspace
+from apps.documents.services import list_sops
 
 
 @login_required
@@ -11,5 +12,6 @@ def dashboard_view(request):
         'user': request.user,
         'workspace': membership.workspace,
         'membership': membership,
+        'sop_count': list_sops(user=request.user, workspace=membership.workspace).count(),
     })
 

@@ -101,24 +101,6 @@
     }
 
     /* ------------------------------------------------------------------
-       Submit placeholder
-    ------------------------------------------------------------------ */
-    document.getElementById('uploadModalSubmit')?.addEventListener('click', function () {
-        const text = textarea?.value?.trim();
-        if (!text) {
-            textarea?.focus();
-            textarea?.classList.add('upload-textarea--error');
-            setTimeout(() => textarea?.classList.remove('upload-textarea--error'), 1200);
-            return;
-        }
-        // TODO: wire to real backend upload
-        alert('SOP uploaded! (placeholder — wire to your backend endpoint)');
-        closeModal();
-        if (textarea) textarea.value = '';
-        if (fileInput) fileInput.value = '';
-    });
-
-    /* ------------------------------------------------------------------
        Init
     ------------------------------------------------------------------ */
     setGreeting();
