@@ -5,3 +5,7 @@ db.sqlite3
 __pycache__/
 *.pyc
 
+# Local product and implementation instructions (may contain private context).
+/RegulaX_AI_Agent_Instructions.md
+/RegulaX_Incremental_Implementation_Plan.md
+
