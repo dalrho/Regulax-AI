@@ -1,0 +1,65 @@
+.assessment-main { max-width: 1500px; }
+.assessment-header { display:flex; align-items:flex-start; justify-content:space-between; gap:24px; margin-bottom:24px; }
+.assessment-header h1 { margin:7px 0 8px; color:#111827; font-size:32px; letter-spacing:-.035em; }
+.assessment-header p { margin:0; color:#6b7280; font-size:14px; }
+.assessment-eyebrow { color:#6b7280!important; font-size:11px!important; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+.assessment-back { display:inline-block; margin-bottom:12px; color:#4b5563; text-decoration:none; font-size:13px; }
+.assessment-back:hover { color:#111827; text-decoration:underline; }
+.assessment-cta { white-space:nowrap; text-decoration:none; }
+.availability-note { display:flex; align-items:center; gap:14px; margin:0 0 20px; padding:15px 17px; border:1px solid #bfdbfe; border-radius:9px; background:#eff6ff; color:#1e3a8a; }
+.availability-note strong { white-space:nowrap; font-size:13px; }
+.availability-note span { flex:1; font-size:13px; line-height:1.5; }
+.availability-note .run-disabled { flex-shrink:0; opacity:.52; cursor:not-allowed; }
+.assessment-errors,.assessment-flash { margin:0 0 18px; padding:12px 15px; border-radius:8px; background:#fef2f2; color:#991b1b; font-size:13px; }
+.assessment-errors p,.assessment-flash p { margin:2px 0; }
+.assessment-flash { background:#ecfdf5; color:#065f46; }
+.assessment-form,.scope-card,.assessment-table-wrap { padding:24px; border:1px solid #e5e7eb; border-radius:10px; background:#fff; box-shadow:0 1px 2px #1118270a; }
+.assessment-form { max-width:900px; }
+.assessment-form>label,.assessment-form fieldset legend { display:block; margin:0 0 8px; color:#1f2937; font-size:13px; font-weight:650; }
+.assessment-form>input,.assessment-form>select { display:block; width:100%; margin:0 0 22px; padding:11px 12px; border:1px solid #d1d5db; border-radius:7px; background:white; color:#111827; font:inherit; font-size:14px; }
+.assessment-form fieldset { min-width:0; margin:0 0 22px; padding:0; border:0; }
+.assessment-form fieldset legend { width:100%; padding:0; }
+.assessment-form fieldset legend span,.assessment-help { color:#6b7280; font-size:12px; font-weight:400; }
+.version-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; max-height:300px; overflow:auto; padding:2px; }
+.version-option { display:flex; align-items:flex-start; gap:10px; padding:12px; border:1px solid #e5e7eb; border-radius:8px; cursor:pointer; }
+.version-option:hover { border-color:#93c5fd; background:#f8fbff; }
+.version-option input { margin:3px 0 0; accent-color:#2563eb; }
+.version-option span { display:flex; min-width:0; flex-direction:column; gap:4px; }
+.version-option strong { color:#111827; font-size:13px; }
+.version-option small,.assessment-table td small,.selected-document small { color:#6b7280; font-size:11px; }
+.assessment-help { margin:9px 0 0; line-height:1.5; }
+.scope-confirmation { margin:8px 0 22px; padding:16px; border-radius:8px; background:#f9fafb; }
+.scope-confirmation h2 { margin:0 0 5px; color:#111827; font-size:14px; }
+.scope-confirmation p { margin:0 0 12px; color:#6b7280; font-size:12px; line-height:1.5; }
+.scope-confirmation label { display:flex; align-items:flex-start; gap:8px; color:#374151; font-size:12px; }
+.scope-confirmation input { margin:2px 0 0; accent-color:#2563eb; }
+.assessment-form-actions { display:flex; justify-content:flex-end; gap:10px; }
+.assessment-form-actions a { display:inline-flex; align-items:center; text-decoration:none; }
+.assessment-table { width:100%; border-collapse:collapse; text-align:left; font-size:13px; }
+.assessment-table th { padding:12px 14px; border-bottom:1px solid #e5e7eb; color:#6b7280; font-size:10px; letter-spacing:.06em; text-transform:uppercase; }
+.assessment-table td { padding:15px 14px; border-bottom:1px solid #f3f4f6; color:#374151; vertical-align:top; }
+.assessment-table tbody tr:last-child td { border-bottom:0; }
+.assessment-table td a { color:#111827; font-weight:600; text-decoration:none; }
+.assessment-table td a:hover { text-decoration:underline; }
+.assessment-table td small { display:block; margin-top:5px; }
+.draft-pill,.role-pill { display:inline-flex; align-items:center; width:max-content; padding:4px 9px; border-radius:99px; background:#fef3c7; color:#92400e; font-size:11px; font-weight:700; }
+.draft-pill.large { padding:7px 12px; }
+.assessment-empty { padding:48px!important; color:#6b7280!important; text-align:center; }
+.detail-header { margin-bottom:18px; }
+.scope-card { max-width:1000px; }
+.scope-card-heading { display:flex; justify-content:space-between; align-items:center; gap:16px; padding-bottom:17px; border-bottom:1px solid #e5e7eb; }
+.scope-card-heading h2 { margin:5px 0 0; color:#111827; font-size:19px; }
+.scope-card-heading .btn-outline { padding:8px 12px; border:1px solid #d1d5db; border-radius:7px; color:#374151; background:#fff; font-size:12px; text-decoration:none; }
+.selected-pack { display:flex; flex-direction:column; gap:5px; padding:18px 0; }
+.scope-label { color:#6b7280; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+.selected-pack strong { color:#111827; font-size:14px; }
+.selected-pack>span:last-child { color:#6b7280; font-size:12px; }
+.scope-card h3 { margin:7px 0 10px; color:#111827; font-size:14px; }
+.selected-documents { display:flex; flex-direction:column; }
+.selected-document { display:flex; align-items:center; gap:13px; padding:13px 0; border-top:1px solid #f3f4f6; }
+.selected-document>div { display:flex; flex:1; flex-direction:column; gap:5px; }
+.selected-document strong { color:#111827; font-size:13px; }
+.selected-document>a { color:#2563eb; font-size:12px; text-decoration:none; }
+.role-pill { background:#dbeafe; color:#1e40af; }
+.scope-footnote { margin:16px 0 0; padding-top:14px; border-top:1px solid #e5e7eb; color:#6b7280; font-size:12px; }
+@media(max-width:800px) { .assessment-main { padding:28px 20px; } .assessment-header { flex-direction:column; } .version-options { grid-template-columns:1fr; } .assessment-table-wrap { overflow-x:auto; padding:12px; } .assessment-table { min-width:700px; } .availability-note { align-items:flex-start; flex-wrap:wrap; } .availability-note .run-disabled { margin-left:auto; } }
