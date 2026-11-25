@@ -8,5 +8,6 @@ urlpatterns = [
     path('dashboard/', include('apps.dashboard.urls')),
     path('sops/', include('apps.documents.urls')),
     path('workspace/', include('apps.workspaces.urls')),
+    path('assessments/', include('apps.assessments.urls')),
 ]
 

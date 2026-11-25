@@ -46,7 +46,7 @@
                 <span class="sidebar-nav-label">SOP Library</span>
                 <span class="sidebar-badge">{{ sop_count }}</span>
             </a>
-            <a href="javascript:void(0)" class="sidebar-nav-item">
+            <a href="javascript:void(0)" class="sidebar-nav-item" aria-disabled="true" title="Regulatory Library is not available yet">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -55,7 +55,7 @@
                 <span class="sidebar-nav-label">Regulatory Library</span>
                 <span class="sidebar-badge">0</span>
             </a>
-            <a href="javascript:void(0)" class="sidebar-nav-item">
+            <a href="{% url 'assessment_history' %}" class="sidebar-nav-item">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="9 11 12 14 22 4"></polyline>
@@ -114,23 +114,21 @@
                 <h1 class="dash-greeting" id="dashGreeting">Good afternoon.</h1>
                 <p class="dash-greeting-sub">{{ workspace.company_name }} workspace</p>
                 <p class="dash-stats">
-                    <span>0 SOPs</span>
+                    <span>{{ sop_count }} SOPs</span>
                     <span class="dash-stats-dot">·</span>
-                    <span>0 requirements</span>
-                    <span class="dash-stats-dot">·</span>
-                    <span>0 assessments</span>
+                    <span>{{ assessment_count }} assessments</span>
                 </p>
             </div>
             <div class="dash-header-actions">
                 <button type="button" class="btn-outline" id="uploadSopTopBtn">Upload SOP</button>
-                <button type="button" class="btn-primary">New assessment</button>
+                <a href="{% url 'assessment_create' %}" class="btn-primary" style="text-decoration:none;">New assessment</a>
             </div>
         </div>
 
         <!-- Onboarding card -->
         <div class="onboarding-card">
             <h2 class="onboarding-title">Start with your first SOP.</h2>
-            <p class="onboarding-subtitle">Three steps take you from a document to reviewed findings.</p>
+            <p class="onboarding-subtitle">Add source documents, choose a published requirement pack, and save a draft scope.</p>
 
             <!-- Steps — vertical list -->
             <ol class="step-list">
@@ -159,8 +157,8 @@
                 <li class="step-row">
                     <span class="step-num">3</span>
                     <div class="step-body">
-                        <span class="step-title">Run an assessment</span>
-                        <span class="step-desc">Review each finding with its evidence.</span>
+                        <span class="step-title">Execution is coming later</span>
+                        <span class="step-desc">Saved assessments are drafts; no checks or findings are generated yet.</span>
                     </div>
                     <svg class="step-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -172,9 +170,16 @@
             <!-- CTA row -->
             <div class="onboarding-cta">
                 <button type="button" class="btn-primary" id="uploadSopCardBtn">Upload SOP</button>
-                <span class="onboarding-or-text">or paste text directly</span>
+                <a href="{% url 'assessment_create' %}" class="onboarding-or-text">Create a draft assessment</a>
             </div>
         </div>
+
+        <section class="recent-assessments">
+            <div class="recent-assessments-header"><div><h2>Recent assessments</h2><p>Saved scopes in this workspace</p></div><a href="{% url 'assessment_history' %}">View history</a></div>
+            {% for assessment in recent_assessments %}
+            <a class="recent-assessment-row" href="{% url 'assessment_detail' assessment.pk %}"><span class="recent-assessment-name">{{ assessment.name }}<small>{{ assessment.pack_version.pack.title }} · {{ assessment.pack_version.version_label }}</small></span><span class="recent-draft-status">Draft</span><time datetime="{{ assessment.created_at|date:'c' }}">{{ assessment.created_at|date:"M j, Y" }}</time></a>
+            {% empty %}<p class="recent-assessments-empty">No assessments saved yet.</p>{% endfor %}
+        </section>
 
     </main>
 </div>

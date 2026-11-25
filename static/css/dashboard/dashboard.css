@@ -235,6 +235,26 @@
     background-size: 22px 22px;
 }
 
+.recent-assessments {
+    max-width: 980px;
+    margin-top: 24px;
+    padding: 20px 22px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #fff;
+}
+.recent-assessments-header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:10px; }
+.recent-assessments-header h2 { margin:0 0 4px; color:#111827; font-size:16px; }
+.recent-assessments-header p { margin:0; color:#6b7280; font-size:12px; }
+.recent-assessments-header>a { color:#2563eb; font-size:12px; text-decoration:none; }
+.recent-assessment-row { display:flex; align-items:center; gap:16px; padding:12px 0; border-top:1px solid #f3f4f6; color:#374151; text-decoration:none; font-size:12px; }
+.recent-assessment-row:hover .recent-assessment-name { text-decoration:underline; }
+.recent-assessment-name { flex:1; color:#111827; font-weight:600; }
+.recent-assessment-name small { display:block; margin-top:4px; color:#6b7280; font-weight:400; }
+.recent-draft-status { padding:4px 9px; border-radius:99px; background:#fef3c7; color:#92400e; font-size:10px; font-weight:700; }
+.recent-assessment-row time { color:#6b7280; }
+.recent-assessments-empty { padding:14px 0 4px; border-top:1px solid #f3f4f6; color:#6b7280; font-size:13px; }
+
 /* ==========================================================================
    PAGE HEADER
    ========================================================================== */

@@ -3,7 +3,7 @@ import hashlib
 from django.conf import settings
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
-from django.db.models import Max, Q
+from django.db.models import Max, OuterRef, Q, Subquery
 
 from apps.workspaces.models import Membership
 
@@ -132,7 +132,12 @@ def list_sops(*, user, workspace, include_archived=False, search=''):
         normalized_id = search.upper().removeprefix('SOP-')
         id_match = Q(pk=int(normalized_id)) if normalized_id.isdigit() else Q(pk__in=[])
         queryset = queryset.filter(Q(title__icontains=search) | id_match)
-    return queryset.prefetch_related('versions').order_by('title', 'pk')
+    latest_version_number = SOPVersion.objects.filter(
+        sop_id=OuterRef('pk'),
+    ).order_by('-version_number').values('version_number')[:1]
+    return queryset.annotate(
+        latest_version_number=Subquery(latest_version_number),
+    ).order_by('title', 'pk')
 
 
 def get_sop(*, user, workspace, sop_id):

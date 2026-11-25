@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'apps.documents.apps.DocumentsConfig',
     'apps.regulations.apps.RegulationsConfig',
     'apps.dashboard.apps.DashboardConfig',
+    'apps.assessments.apps.AssessmentsConfig',
 ]
 
 MIDDLEWARE = [
