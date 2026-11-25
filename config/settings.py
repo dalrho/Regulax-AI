@@ -136,3 +136,8 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'login'
 
+# Local document preparation uses BGE through sentence-transformers.
+SOP_EMBEDDING_MODEL = os.environ.get('SOP_EMBEDDING_MODEL', 'BAAI/bge-base-en-v1.5')
+SOP_EMBEDDING_DIMENSIONS = int(os.environ.get('SOP_EMBEDDING_DIMENSIONS', '768'))
+SOP_CHUNK_MAX_CHARS = int(os.environ.get('SOP_CHUNK_MAX_CHARS', '1800'))
+
