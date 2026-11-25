@@ -1,12 +1,11 @@
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
-from django.utils import timezone
 
 from apps.documents.models import SOPVersion
 from apps.regulations.models import RequirementPackVersion
 from apps.workspaces.models import Membership
 
-from .models import Assessment, AssessmentDocument
+from .models import Assessment, AssessmentDocument, Finding, FindingReview
 
 
 def _require_membership(user, workspace):
@@ -106,17 +105,31 @@ def get_assessment(*, user, workspace, assessment_id):
 
 
 @transaction.atomic
-def freeze_assessment_scope(*, user, workspace, assessment_id):
-    """Execution-service hook: freeze the saved definition before a future run starts."""
+def record_finding_review(*, user, workspace, finding_id, decision, note='', assessment_id=None):
+    """Append a member's review without changing the AI finding or earlier reviews."""
     _require_membership(user, workspace)
+    note = (note or '').strip()
+    if len(note) > 4000:
+        raise ValidationError('Review note must be 4,000 characters or fewer.')
     try:
-        assessment = Assessment.objects.select_for_update().get(
-            pk=assessment_id, workspace=workspace, status=Assessment.Status.DRAFT, scope_frozen_at__isnull=True,
+        finding_query = Finding.objects.select_related('assessment').filter(
+            pk=finding_id, assessment__workspace=workspace,
         )
-    except Assessment.DoesNotExist as error:
-        raise ValidationError('Only an unstarted draft can be frozen for execution.') from error
-    if not assessment.documents.filter(role=AssessmentDocument.Role.PRIMARY).exists():
-        raise ValidationError('An assessment must have one primary SOP version before execution.')
-    assessment.scope_frozen_at = timezone.now()
-    assessment.save(update_fields=('scope_frozen_at', 'updated_at'))
-    return assessment
+        if assessment_id is not None:
+            finding_query = finding_query.filter(assessment_id=assessment_id)
+        finding = finding_query.get()
+    except Finding.DoesNotExist as error:
+        raise PermissionDenied('That finding is not in the active workspace.') from error
+    if decision not in FindingReview.Decision.values:
+        raise ValidationError('Choose a valid reviewer decision.')
+    return FindingReview.objects.create(
+        finding=finding, reviewer=user, decision=decision, note=note,
+    )
+
+
+@transaction.atomic
+def freeze_assessment_scope(*, user, workspace, assessment_id):
+    """Backward-compatible entry point that freezes and queues an approved run."""
+    from .execution import queue_assessment
+
+    return queue_assessment(user=user, workspace=workspace, assessment_id=assessment_id)
