@@ -70,8 +70,14 @@ def sop_detail_view(request, sop_id):
     membership = active_membership(request)
     sop = get_sop(user=request.user, workspace=membership.workspace, sop_id=sop_id)
     versions = sop.versions.order_by('-version_number')
+    try:
+        highlighted_version_id = int(request.GET.get('version', ''))
+    except (TypeError, ValueError):
+        highlighted_version_id = None
+    if not versions.filter(pk=highlighted_version_id).exists():
+        highlighted_version_id = None
     return render(request, 'documents/sop_detail.html', _sop_context(
-        request, membership, sop=sop, versions=versions,
+        request, membership, sop=sop, versions=versions, highlighted_version_id=highlighted_version_id,
     ))
 
 

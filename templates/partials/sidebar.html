@@ -1,0 +1,57 @@
+{% load static %}
+<aside class="sidebar">
+    <a class="sidebar-brand" href="{% url 'dashboard' %}" aria-label="Regulax AI overview">
+        <span class="sidebar-logo"><span class="sidebar-logo-mark">R</span></span>
+        <span class="sidebar-brand-text"><span class="sidebar-brand-name">Regulax AI</span><span class="sidebar-brand-sub">{{ workspace.company_name|default:'QA workspace' }}</span></span>
+        <svg class="sidebar-brand-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5-5 5 5M7 14l5 5 5-5"/></svg>
+    </a>
+
+    <div class="sidebar-primary">
+        <div class="sidebar-section-label">Workspace</div>
+        <nav class="sidebar-nav" aria-label="Workspace navigation">
+            <a href="{% url 'dashboard' %}" class="sidebar-nav-item{% if active_page == 'overview' %} is-active{% endif %}"{% if active_page == 'overview' %} aria-current="page"{% endif %}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/></svg>
+                <span class="sidebar-nav-label">Overview</span>
+            </a>
+            <a href="{% url 'sop_library' %}" class="sidebar-nav-item{% if active_page == 'sop' %} is-active{% endif %}"{% if active_page == 'sop' %} aria-current="page"{% endif %}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span class="sidebar-nav-label">SOP Library</span><span class="sidebar-badge">{{ sop_count|default:0 }}</span>
+            </a>
+            <a href="#" class="sidebar-nav-item unavailable-link" aria-disabled="true" title="Regulatory Library is not available yet">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                <span class="sidebar-nav-label">Regulatory Library</span><span class="sidebar-badge">0</span>
+            </a>
+            <a href="{% url 'assessment_history' %}" class="sidebar-nav-item{% if active_page == 'assessments' %} is-active{% endif %}"{% if active_page == 'assessments' %} aria-current="page"{% endif %}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m8 12 2.5 2.5L16 9"/></svg>
+                <span class="sidebar-nav-label">Assessments</span><span class="sidebar-badge">{{ in_progress_assessment_count|default:0 }}</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-section-label sidebar-quick-label">Quick Links</div>
+        <nav class="sidebar-nav" aria-label="Quick links">
+            <a href="{% url 'assessment_history' %}" class="sidebar-nav-item{% if active_page == 'history' %} is-active{% endif %}"{% if active_page == 'history' %} aria-current="page"{% endif %}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                <span class="sidebar-nav-label">History</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-onboarding" aria-label="Getting started checklist">
+        <div class="sidebar-onboarding-heading"><strong>Getting started</strong><span>0/3</span></div>
+        <div class="sidebar-onboarding-progress"><span></span></div>
+        <ul><li><span></span>Upload an SOP</li><li><span></span>Choose a requirement pack</li><li><span></span>Run an assessment</li></ul>
+    </div>
+    <div class="sidebar-bottom">
+        {% if membership.role == 'owner' %}
+        <a href="{% url 'workspace_settings' %}" class="sidebar-nav-item sidebar-settings-link{% if active_page == 'settings' or active_page == 'members' %} is-active{% endif %}"{% if active_page == 'settings' or active_page == 'members' %} aria-current="page"{% endif %}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5v.1a2 2 0 1 1-4 0V19a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8A1.7 1.7 0 0 0 3 12.2h-.1a2 2 0 1 1 0-4H3a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3A1.7 1.7 0 0 0 9.8 1.5v-.1a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8 1.7 1.7 0 0 0 1.5 1h.1a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1 1.7 1.7 0 0 0 .3 1.8Z"/></svg>
+            <span class="sidebar-nav-label">Workspace Settings</span>
+        </a>
+        {% endif %}
+        <div class="sidebar-user">
+            <div class="sidebar-avatar" aria-hidden="true">{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}</div>
+            <div class="sidebar-user-info"><span class="sidebar-user-name">{{ user.get_full_name|default:user.username }}</span><a href="{% url 'logout' %}" class="sidebar-user-signout">Sign out</a></div>
+        </div>
+    </div>
+</aside>

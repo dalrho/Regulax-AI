@@ -1,16 +1,48 @@
 {% extends "base/base.html" %}
+{% load static %}
 {% block title %}Workspace Settings - Regulax AI{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/workspaces/workspaces.css' %}">
+{% endblock %}
 {% block content %}
-<main style="max-width: 760px; margin: 48px auto; padding: 0 24px; font-family: Inter, sans-serif;">
-    <p><a href="{% url 'dashboard' %}">← Dashboard</a></p>
-    <h1>Workspace settings</h1>
-    <p>Settings for <strong>{{ workspace.company_name }}</strong></p>
-    {% if messages %}{% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}{% endif %}
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save settings</button>
-    </form>
-    <p><a href="{% url 'workspace_members' %}">Manage workspace members</a></p>
-</main>
+<div class="dashboard-shell">
+    {% include "partials/sidebar.html" with active_page="settings" %}
+    <main class="dashboard-main workspace-main">
+        <header class="workspace-page-header">
+            <div><h1>Workspace Settings</h1><p>Manage your workspace details and team.</p></div>
+            <button class="btn-primary" type="submit" form="workspace-settings-form">Save changes</button>
+        </header>
+        {% if messages %}{% for message in messages %}<p class="workspace-message" role="status">{{ message }}</p>{% endfor %}{% endif %}
+        <div class="workspace-settings-layout">
+            <nav class="workspace-settings-nav" aria-label="Settings sections">
+                <a class="is-active" href="#general">General</a>
+                <a href="{% url 'workspace_members' %}">Members</a>
+                <a href="#danger-zone">Danger zone</a>
+            </nav>
+            <div class="workspace-settings-content">
+                <section class="workspace-settings-card" id="general">
+                    <h2>General</h2>
+                    <form method="post" id="workspace-settings-form">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <div class="workspace-setting-row">
+                            <div class="workspace-setting-description"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{% if field.help_text %}<p>{{ field.help_text }}</p>{% endif %}{% for error in field.errors %}<p class="workspace-field-error">{{ error }}</p>{% endfor %}</div>
+                            <div class="workspace-setting-control">{{ field }}</div>
+                        </div>
+                        {% endfor %}
+                    </form>
+                </section>
+                <section class="workspace-settings-card" id="members">
+                    <h2>Members</h2>
+                    <div class="workspace-setting-row"><div class="workspace-setting-description"><strong>Manage workspace members</strong><p>Invite people and change their roles.</p></div><a class="btn-outline" href="{% url 'workspace_members' %}">Manage</a></div>
+                </section>
+                <section class="workspace-settings-card workspace-danger-card" id="danger-zone">
+                    <h2>Danger zone</h2>
+                    <div class="workspace-setting-row"><div class="workspace-setting-description"><strong>Delete workspace</strong><p>Permanently removes all SOPs, assessments and history.</p></div><button class="btn-outline workspace-delete-button" type="button" disabled>Delete workspace</button></div>
+                </section>
+            </div>
+        </div>
+    </main>
+</div>
 {% endblock %}

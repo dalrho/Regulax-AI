@@ -216,7 +216,10 @@ def _semantic_rank(chunks, query_vector, active_keys):
     return sorted(scores, key=lambda pk: (-scores[pk], pk))
 
 
-def retrieve_evidence(*, user, workspace, selected_version_ids, query, top_k=5, neighbor_chunks=1, provider=None):
+def retrieve_evidence(
+    *, user, workspace, selected_version_ids, query, top_k=5, neighbor_chunks=1,
+    provider=None, selected_preparation_keys=None,
+):
     """Retrieve evidence only from caller-selected versions in their active workspace."""
     _require_membership(user, workspace)
     query = (query or '').strip()
@@ -236,21 +239,18 @@ def retrieve_evidence(*, user, workspace, selected_version_ids, query, top_k=5, 
     by_id = {version.pk: version for version in versions}
     if set(by_id) != set(version_ids):
         raise PermissionDenied('One or more selected SOP versions are not in the active workspace.')
-    unprepared = [version.pk for version in versions if not version.active_preparation_key]
+    selected_preparation_keys = selected_preparation_keys or {}
+    keys = {
+        version.pk: selected_preparation_keys.get(version.pk)
+        or selected_preparation_keys.get(str(version.pk))
+        or version.active_preparation_key
+        for version in versions
+    }
+    unprepared = [version.pk for version in versions if not keys[version.pk]]
     if unprepared:
         raise ValidationError(f'SOP version(s) {", ".join(map(str, unprepared))} are not prepared. Prepare them, then retry.')
 
     provider = provider or SentenceTransformersProvider()
-    incompatible = [
-        version.pk for version in versions
-        if version.embedding_model != provider.model_name or version.embedding_dimensions != provider.dimensions
-    ]
-    if incompatible:
-        raise ValidationError(
-            f'SOP version(s) {", ".join(map(str, incompatible))} use another embedding model. Reprepare them with {provider.model_name}.'
-        )
-
-    keys = {version.pk: version.active_preparation_key for version in versions}
     active_filter = Q()
     for version_id, key in keys.items():
         active_filter |= Q(sop_version_id=version_id, preparation_key=key)
@@ -259,6 +259,19 @@ def retrieve_evidence(*, user, workspace, selected_version_ids, query, top_k=5, 
     ))
     if not chunks:
         raise ValidationError('No chunks are available for the selected prepared SOP versions.')
+    represented_versions = {chunk.sop_version_id for chunk in chunks}
+    missing_chunk_versions = set(version_ids) - represented_versions
+    if missing_chunk_versions:
+        raise ValidationError(
+            f'Pinned preparation chunks are unavailable for SOP version(s) {", ".join(map(str, sorted(missing_chunk_versions)))}.'
+        )
+    incompatible_configs = {
+        (chunk.embedding_model, chunk.embedding_dimensions) for chunk in chunks
+    }
+    if incompatible_configs != {(provider.model_name, provider.dimensions)}:
+        raise ValidationError(
+            'Selected preparation chunks use an embedding model/configuration different from the pinned retrieval provider.'
+        )
 
     semantic_warning = ''
     semantic_ids = []

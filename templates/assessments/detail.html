@@ -3,11 +3,54 @@
 {% block title %}{{ assessment.name }} - Regulax AI{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/dashboard/dashboard.css' %}"><link rel="stylesheet" href="{% static 'css/assessments/assessments.css' %}">{% endblock %}
 {% block content %}
-<div class="dashboard-shell"><aside class="sidebar"><div class="sidebar-brand"><div class="sidebar-logo"><span class="sidebar-logo-mark">R</span></div><div class="sidebar-brand-text"><span class="sidebar-brand-name">Regulax AI</span><span class="sidebar-brand-sub">QA workspace</span></div></div><div class="sidebar-section-label">Workspace</div><nav class="sidebar-nav" aria-label="Workspace navigation"><a href="{% url 'dashboard' %}" class="sidebar-nav-item"><span class="sidebar-nav-label">Overview</span></a><a href="{% url 'sop_library' %}" class="sidebar-nav-item"><span class="sidebar-nav-label">SOP Library</span></a><a href="{% url 'assessment_history' %}" class="sidebar-nav-item is-active"><span class="sidebar-nav-label">Assessments</span></a></nav><div class="sidebar-spacer"></div><div class="sidebar-bottom">{% if membership.role == 'owner' %}<a href="{% url 'workspace_settings' %}" class="sidebar-nav-item"><span class="sidebar-nav-label">Workspace Settings</span></a>{% endif %}<div class="sidebar-user"><div class="sidebar-avatar">{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}</div><div class="sidebar-user-info"><span class="sidebar-user-name">{{ user.get_full_name|default:user.username }}</span><a href="{% url 'logout' %}" class="sidebar-user-signout">Sign out</a></div></div></div></aside>
-<main class="dashboard-main assessment-main"><a href="{% url 'assessment_history' %}" class="assessment-back">← Assessment history</a><header class="assessment-header detail-header"><div><p class="assessment-eyebrow">{{ workspace.company_name }} workspace</p><h1>{{ assessment.name }}</h1><p>Created {{ assessment.created_at|date:"M j, Y · P" }} · {{ assessment.created_by.get_full_name|default:assessment.created_by.username }}</p></div><span class="draft-pill large">Draft</span></header>
-<div class="availability-note"><strong>Execution unavailable</strong><span>This assessment is saved for review. Run will be enabled when assessment execution is available. No checks have run and no findings exist.</span><button class="btn-primary run-disabled" type="button" disabled aria-describedby="runUnavailableReason">Run assessment</button><span id="runUnavailableReason" class="visually-hidden">Execution is not available yet.</span></div>
-<section class="scope-card"><div class="scope-card-heading"><div><p class="assessment-eyebrow">Frozen version references</p><h2>Selected scope</h2></div>{% if assessment.status == 'draft' and not assessment.scope_frozen_at %}<a class="btn-outline" href="{% url 'assessment_edit' assessment.pk %}">Edit draft</a>{% endif %}</div>
-<div class="selected-pack"><span class="scope-label">Requirement pack version</span><strong>{{ assessment.pack_version.pack.title }} — {{ assessment.pack_version.version_label }}</strong><span>{{ assessment.pack_version.pack.jurisdiction }}{% if assessment.pack_version.pack.authority %} · {{ assessment.pack_version.pack.authority }}{% endif %}</span></div>
-<h3>SOP versions</h3><div class="selected-documents">{% for item in documents %}<article class="selected-document"><span class="role-pill">{{ item.get_role_display }}</span><div><strong>{{ item.sop_version.sop.title }}</strong><small>{{ item.sop_version.version_label }} · SOP-{{ item.sop_version.sop_id|stringformat:"03d" }} · added {{ item.sop_version.created_at|date:"M j, Y" }}</small></div><a href="{% url 'sop_detail' item.sop_version.sop_id %}">View SOP</a></article>{% empty %}<p>No SOP versions have been selected.</p>{% endfor %}</div>
-<p class="scope-footnote">These references point to the exact versions selected when this draft was saved. Later uploads do not change the saved scope.</p></section></main></div>
+<div class="dashboard-shell">
+    {% include "partials/sidebar.html" with active_page="assessments" %}
+    <main class="dashboard-main assessment-main" {% if assessment.status == 'queued' or assessment.status == 'running' %}data-progress-url="{% url 'assessment_progress' assessment.pk %}"{% endif %}>
+        <a href="{% url 'assessment_history' %}" class="assessment-back">← Assessment history</a>
+        {% if messages %}<div class="assessment-flash" role="status">{% for message in messages %}<p>{{ message }}</p>{% endfor %}</div>{% endif %}
+        <header class="assessment-header detail-header">
+            <div><p class="assessment-eyebrow">{{ workspace.company_name }} workspace</p><h1>{{ assessment.name }}</h1><p>Created {{ assessment.created_at|date:"M j, Y · P" }} · {{ assessment.created_by.get_full_name|default:assessment.created_by.username }}</p></div>
+            <span class="status-pill status-{{ assessment.status }}" id="assessmentStatus">{{ assessment.get_status_display }}</span>
+        </header>
+
+        {% if assessment.status == 'draft' %}
+        <section class="availability-note"><strong>Ready to run</strong>
+            {% if can_run %}<span>This will queue all {{ total_requirements }} requirements for background review. Progress and valid partial findings are saved as the worker proceeds.</span><form method="post" action="{% url 'assessment_run' assessment.pk %}">{% csrf_token %}<button class="btn-primary" type="submit">Run assessment</button></form>
+            {% else %}<span>{{ run_error }}</span><button class="btn-primary run-disabled" type="button" disabled>Run assessment</button>{% endif %}
+            {% if can_edit_draft %}<a class="btn-outline" href="{% url 'assessment_edit' assessment.pk %}">Edit draft</a>{% endif %}
+        </section>
+        {% elif assessment.status == 'queued' or assessment.status == 'running' %}
+        <section class="progress-card" aria-live="polite">
+            <div class="progress-heading"><strong>Assessment {{ assessment.get_status_display|lower }}</strong><span><b id="progressAccounted">{{ accounted_count }}</b> of {{ total_requirements }} requirements accounted for</span></div>
+            <div class="progress-track"><span id="assessmentProgressBar" style="width:{% widthratio accounted_count total_requirements 100 %}%"></span></div>
+            <p><span id="progressFindingCount">{{ findings|length }}</span> findings · <span id="progressExcludedCount">{{ assessment.requirement_exclusions.count }}</span> excluded</p>
+        </section>
+        {% elif assessment.status == 'failed' %}
+        <section class="execution-alert"><div><strong>Execution failed</strong><p>{{ job.last_error|default:"One or more requirements remain without a validated finding or reviewer exclusion." }}</p><p>Saved valid findings remain available. Retry resumes this frozen run.</p></div><form method="post" action="{% url 'assessment_retry' assessment.pk %}">{% csrf_token %}<button class="btn-primary" type="submit">Retry assessment</button></form></section>
+        {% elif assessment.status == 'completed' %}
+        <section class="completed-note"><strong>Assessment completed</strong><span>{{ findings|length }} findings · {{ assessment.requirement_exclusions.count }} human applicability exclusions · {{ total_requirements }} total requirements.</span></section>
+        {% endif %}
+
+        <section class="scope-card">
+            <div class="scope-card-heading"><div><p class="assessment-eyebrow">Frozen version references</p><h2>Selected scope</h2></div></div>
+            <div class="selected-pack"><span class="scope-label">Requirement pack version</span><strong>{{ assessment.pack_version.pack.title }} — {{ assessment.pack_version.version_label }}</strong><span>{{ assessment.pack_version.pack.jurisdiction }}{% if assessment.pack_version.pack.authority %} · {{ assessment.pack_version.pack.authority }}{% endif %}</span></div>
+            <h3>SOP versions</h3>
+            <div class="selected-documents">{% for item in documents %}<article class="selected-document"><span class="role-pill">{{ item.get_role_display }}</span><div><strong>{{ item.sop_version.sop.title }}</strong><small>{{ item.sop_version.version_label }} · SOP-{{ item.sop_version.sop_id|stringformat:"03d" }} · added {{ item.sop_version.created_at|date:"M j, Y" }}</small></div><a href="{% url 'sop_detail' item.sop_version.sop_id %}?version={{ item.sop_version_id }}#version-{{ item.sop_version_id }}">View selected version</a></article>{% empty %}<p>No SOP versions have been selected.</p>{% endfor %}</div>
+            <p class="scope-footnote">These references point to the exact versions selected when this assessment was saved. Later uploads do not change the saved scope.</p>
+        </section>
+
+        {% if findings %}<section class="result-list"><header><div><p class="assessment-eyebrow">Reviewable findings</p><h2>Requirement results</h2></div>{% if total_requirements > 1 and assessment.status != 'completed' %}<span class="partial-coverage-note">Partial pack coverage</span>{% endif %}</header>
+            {% for finding in findings %}<article class="result-row"><div class="result-row-heading"><span class="status-pill status-finding">{{ finding.get_category_display }}</span><a href="{% url 'finding_detail' assessment.pk finding.pk %}">{{ finding.requirement.code }} · {{ finding.requirement.title }}</a></div><p>{{ finding.explanation }}</p><small>{{ finding.supporting_evidence_count }} supporting excerpt(s) · {{ finding.limitation_evidence_count }} limitation excerpt(s) · {{ finding.get_review_scope_display }} · {{ finding.provider_name }}{% if finding.reviews.last %} · Latest decision: {{ finding.reviews.last.get_decision_display }}{% endif %}</small></article>{% endfor %}
+        </section>{% endif %}
+
+        <section class="requirement-accounting"><header><div><p class="assessment-eyebrow">Pack accounting</p><h2>{{ total_requirements }} requirements</h2></div><p>Completion requires a validated finding or explicit reviewer exclusion for every requirement.</p></header>
+            {% for row in requirement_rows %}<article class="requirement-row">
+                <div class="requirement-row-main"><strong>{{ row.requirement.code }} · {{ row.requirement.title }}</strong><span>{{ row.requirement.assessment_question }}</span></div>
+                <div class="requirement-row-state">{% if row.finding %}<a href="{% url 'finding_detail' assessment.pk row.finding.pk %}">{{ row.finding.get_category_display }}</a>{% elif row.exclusion %}<span>Excluded by {{ row.exclusion.reviewer.get_full_name|default:row.exclusion.reviewer.username }}</span><small>{{ row.exclusion.reason }}</small>{% elif row.execution %}<span>{{ row.execution.get_status_display }}</span>{% else %}<span>Not started</span>{% endif %}</div>
+                {% if not row.finding and not row.exclusion and assessment.status != 'completed' %}<form class="exclude-form" method="post" action="{% url 'requirement_exclude' assessment.pk row.requirement.pk %}">{% csrf_token %}<label for="exclude-{{ row.requirement.pk }}">Applicability exclusion reason</label><input id="exclude-{{ row.requirement.pk }}" name="reason" maxlength="4000" required placeholder="Explain why this check does not apply"><button class="btn-outline" type="submit">Exclude requirement</button></form>{% endif %}
+            </article>{% empty %}<p>This pack version has no requirements.</p>{% endfor %}
+        </section>
+    </main>
+</div>
 {% endblock %}
+{% block extra_js %}{% if assessment.status == 'queued' or assessment.status == 'running' %}<script src="{% static 'js/assessments/progress.js' %}"></script>{% endif %}{% endblock %}

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from apps.workspaces.services import ensure_personal_workspace
 from apps.documents.services import list_sops
+from apps.assessments.models import Assessment
 from apps.assessments.services import list_assessments
 
 
@@ -16,6 +17,9 @@ def dashboard_view(request):
         'membership': membership,
         'sop_count': list_sops(user=request.user, workspace=membership.workspace).count(),
         'assessment_count': assessments.count(),
+        'in_progress_assessment_count': assessments.filter(
+            status__in=(Assessment.Status.QUEUED, Assessment.Status.RUNNING),
+        ).count(),
         'recent_assessments': assessments[:5],
     })
 

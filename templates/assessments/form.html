@@ -5,13 +5,10 @@
 {% block extra_js %}<script src="{% static 'js/assessments/assessment_form.js' %}"></script>{% endblock %}
 {% block content %}
 <div class="dashboard-shell">
-    <aside class="sidebar"><div class="sidebar-brand"><div class="sidebar-logo"><span class="sidebar-logo-mark">R</span></div><div class="sidebar-brand-text"><span class="sidebar-brand-name">Regulax AI</span><span class="sidebar-brand-sub">QA workspace</span></div></div>
-        <div class="sidebar-section-label">Workspace</div><nav class="sidebar-nav" aria-label="Workspace navigation"><a href="{% url 'dashboard' %}" class="sidebar-nav-item"><span class="sidebar-nav-label">Overview</span></a><a href="{% url 'sop_library' %}" class="sidebar-nav-item"><span class="sidebar-nav-label">SOP Library</span></a><a href="{% url 'assessment_history' %}" class="sidebar-nav-item is-active"><span class="sidebar-nav-label">Assessments</span></a></nav>
-        <div class="sidebar-spacer"></div><div class="sidebar-bottom">{% if membership.role == 'owner' %}<a href="{% url 'workspace_settings' %}" class="sidebar-nav-item"><span class="sidebar-nav-label">Workspace Settings</span></a>{% endif %}<div class="sidebar-user"><div class="sidebar-avatar">{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}</div><div class="sidebar-user-info"><span class="sidebar-user-name">{{ user.get_full_name|default:user.username }}</span><a href="{% url 'logout' %}" class="sidebar-user-signout">Sign out</a></div></div></div>
-    </aside>
+    {% include "partials/sidebar.html" with active_page="assessments" %}
     <main class="dashboard-main assessment-main">
         <header class="assessment-header"><div><a href="{% url 'assessment_history' %}" class="assessment-back">← Assessment history</a><h1>{% if assessment %}Edit draft assessment{% else %}New assessment{% endif %}</h1><p>Choose the exact SOP versions and published requirement pack for this assessment.</p></div></header>
-        <div class="availability-note"><strong>Draft only</strong><span>Execution is not available yet. Saving this assessment records its scope without running checks or generating findings.</span></div>
+        <div class="availability-note"><strong>Saved scope</strong><span>Saving records the exact requirement pack and SOP versions. The assessment detail page will show whether the selected SOP versions are ready to queue for background review.</span></div>
         {% if errors %}<div class="assessment-errors" role="alert">{% for error in errors %}<p>{{ error }}</p>{% endfor %}</div>{% endif %}
         <form method="post" class="assessment-form">{% csrf_token %}
             <label for="assessmentName">Assessment name</label><input id="assessmentName" name="name" maxlength="200" required value="{{ assessment.name|default:'' }}" placeholder="e.g. Q4 sanitation review">
